@@ -1,0 +1,191 @@
+---
+title: "shiny.webawesome announcement prototype"
+engine: knitr
+format:
+  html:
+    embed-resources: false
+    toc: true
+    page-layout: full
+filters:
+  - shinylive
+---
+
+::: {.callout-note}
+This is a working prototype for the eventual r-posts.com / R-bloggers
+announcement. The first goal is to prove that Quarto, Shinylive, webR,
+R-universe, and the `shiny.webawesome` runtime can all work together.
+:::
+
+## TL;DR
+
+`shiny.webawesome` brings Web Awesome components to R Shiny through generated
+R wrappers, Shiny bindings, and a bundled Web Awesome runtime.
+
+Links to add after CRAN publication:
+
+- CRAN
+- Package website
+- Source repository
+- R-universe
+
+## Background
+
+Placeholder.
+
+## The Whole Game
+
+This first live app is intentionally small. If it works, the final version of
+this section should become a polished product-style screen rather than a
+component catalog.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 560
+
+library(shiny)
+library(shiny.webawesome)
+library(htmltools)
+
+ui <- webawesomePage(
+  title = "shiny.webawesome live prototype",
+  tags$style(HTML("
+    body {
+      margin: 0;
+      background: #f6f7f9;
+      color: #18202b;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .demo-shell {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+    }
+
+    .demo-card {
+      width: min(720px, 100%);
+      box-shadow: 0 18px 48px rgba(24, 32, 43, 0.12);
+      --wa-panel-border-radius: 8px;
+    }
+
+    .demo-card__body {
+      display: grid;
+      gap: 18px;
+      padding: 4px;
+    }
+
+    .demo-kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #4d5b6c;
+      font-size: 0.92rem;
+      font-weight: 650;
+    }
+
+    .demo-title {
+      margin: 0;
+      max-width: 14ch;
+      font-size: 2.6rem;
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .demo-copy {
+      margin: 0;
+      max-width: 58ch;
+      color: #4d5b6c;
+      font-size: 1.04rem;
+      line-height: 1.55;
+    }
+
+    .demo-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .demo-status {
+      min-height: 1.4rem;
+      color: #2f6d57;
+      font-weight: 650;
+    }
+
+    @media (max-width: 560px) {
+      .demo-shell {
+        padding: 16px;
+        place-items: stretch;
+      }
+
+      .demo-title {
+        font-size: 2rem;
+      }
+    }
+  ")),
+  div(
+    class = "demo-shell",
+    wa_card(
+      class = "demo-card",
+      appearance = "filled",
+      header = div(
+        class = "demo-kicker",
+        wa_badge("Live in the browser", appearance = "accent"),
+        span("Powered by Shinylive and Web Awesome")
+      ),
+      div(
+        class = "demo-card__body",
+        h1(class = "demo-title", "Web Awesome, from Shiny"),
+        p(
+          class = "demo-copy",
+          "This tiny app proves that a Shiny UI can render Web Awesome ",
+          "components inside a static Quarto page. The final article will ",
+          "build this into a richer product-style app."
+        ),
+        div(
+          class = "demo-actions",
+          wa_button(
+            "try",
+            "Click the Web Awesome button",
+            appearance = "accent"
+          ),
+          span(class = "demo-status", textOutput("message", inline = TRUE))
+        )
+      )
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  output$message <- renderText({
+    count <- input$try %||% 0
+    if (count == 0) {
+      "Waiting for a click."
+    } else if (count == 1) {
+      "Shiny received the Web Awesome button action."
+    } else {
+      paste("Shiny has received", count, "button actions.")
+    }
+  })
+}
+
+shinyApp(ui, server)
+```
+
+## Design Philosophy
+
+Placeholder.
+
+## Shiny Bindings
+
+Placeholder.
+
+## Command API
+
+Placeholder.
+
+## Conclusion
+
+Placeholder.

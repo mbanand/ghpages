@@ -1,0 +1,10 @@
+scratch/
+journals/
+test-results/
+playwright-report/
+scripts/
+.codex/
+announcement/.quarto/
+announcement/README.md
+announcement/r-posts-maintainer-question.md
+announcement/playwright-*.png
