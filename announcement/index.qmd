@@ -56,7 +56,6 @@ up immediately in the active tab.
 library(shiny)
 library(shiny.webawesome)
 library(htmltools)
-library(ggplot2)
 
 ui <- webawesomePage(
   title = "Iris Workbench",
@@ -145,37 +144,43 @@ ui <- webawesomePage(
       line-height: 1.55;
     }
 
-    .badge-row,
-    .button-row {
+    .badge-row {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       align-items: center;
     }
 
-    .button-row > * {
-      flex: 1 1 0;
+    .preset-group {
+      display: grid;
+      gap: 0.55rem;
     }
 
     .stats-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(110px, 150px));
+      gap: 10px;
+      align-items: start;
     }
 
     .stat-card {
       background: color-mix(in srgb, var(--wa-color-brand-fill-loud) 4%, white);
+      box-shadow: none;
+      border-radius: 18px;
+      padding: 0.7rem 0.9rem;
     }
 
     .stat-label {
       color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);
-      font-size: 0.76rem;
+      font-size: 0.68rem;
       text-transform: uppercase;
       font-weight: 800;
       letter-spacing: 0.08em;
     }
 
     .stat-value {
-      font-size: 1.6rem;
+      font-size: 1rem;
       font-weight: 800;
+      line-height: 1.1;
     }
 
     .preview-header {
@@ -218,6 +223,47 @@ ui <- webawesomePage(
       min-height: 380px;
     }
 
+    .sidebar-callout {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .sidebar-callout wa-icon {
+      color: var(--wa-color-brand-fill-loud);
+      font-size: 1.15rem;
+      line-height: 1;
+      margin-top: 0.2rem;
+    }
+
+    .sidebar-callout-text {
+      margin: 0;
+      line-height: 1.5;
+      color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 78%, white);
+    }
+
+    .preset-label {
+      margin: 0;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);
+    }
+
+    .preset-radios {
+      width: 100%;
+    }
+
+    .preset-radios::part(form-control-input) {
+      gap: 1rem;
+    }
+
+    .preset-radios wa-radio {
+      margin-right: 1rem;
+    }
+
     @media (max-width: 860px) {
       .workbench-layout,
       .stats-grid {
@@ -239,7 +285,7 @@ ui <- webawesomePage(
       style = "gap: 1rem;",
       wa_callout(
         variant = "brand",
-        appearance = "soft",
+        appearance = "outlined",
         icon = "circle-info",
         "This example keeps the controls visible and lets each tab react immediately."
       ),
@@ -273,23 +319,23 @@ ui <- webawesomePage(
           class = "title-stack",
           wa_container(
             class = "badge-row",
-            wa_badge("Iris", appearance = "accent"),
-            wa_badge("ggplot2", appearance = "outlined"),
-            wa_badge("Reactive tabs", appearance = "outlined")
+            wa_badge("Iris", appearance = "filled"),
+            wa_badge("Base graphics", appearance = "filled"),
+            wa_badge("Reactive tabs", appearance = "filled")
           ),
-          h2(class = "title-line", "Shiny can shape a polished analytic surface with Web Awesome."),
+          h2(class = "title-line", "Polished analytics with Shiny + Web Awesome"),
           p(
             class = "title-copy",
-            "Use the left rail to change the view. The chart, summary table, and details tab all respond immediately without making you hunt around the page."
+            "Use the left rail to change the view. The chart, summary table, and details tab all respond."
           )
         )
       ),
       wa_container(
         class = "workbench-layout",
-        wa_card(
-          class = "sidebar-card",
-          header = "Controls",
-          wa_container(
+      wa_card(
+        class = "sidebar-card",
+        header = "Controls",
+        wa_container(
             class = "sidebar-stack",
             wa_select(
               "species",
@@ -309,11 +355,29 @@ ui <- webawesomePage(
               wa_option("Petal length", value = "Petal.Length"),
               wa_option("Petal width", value = "Petal.Width")
             ),
+            wa_select(
+              "y_var",
+              label = "Y variable",
+              value = "Petal.Width",
+              wa_option("Sepal length", value = "Sepal.Length"),
+              wa_option("Sepal width", value = "Sepal.Width"),
+              wa_option("Petal length", value = "Petal.Length"),
+              wa_option("Petal width", value = "Petal.Width"),
+              disabled = TRUE
+            ),
+            wa_switch("show_smoother", "Show trend line", checked = TRUE),
             uiOutput("tab_specific_controls"),
             wa_container(
-              class = "button-row",
-              wa_button("preset_sepal", "Sepal preset", appearance = "outlined"),
-              wa_button("preset_petal", "Petal preset", appearance = "outlined")
+              class = "preset-group",
+              p(class = "preset-label", "Presets"),
+              wa_radio_group(
+                "preset_mode",
+                class = "preset-radios",
+                orientation = "horizontal",
+                value = "sepal",
+                wa_radio("Sepal", value = "sepal"),
+                wa_radio("Petal", value = "petal")
+              )
             ),
             wa_button("open_help", "Open inspector", appearance = "accent"),
             p(class = "sidebar-note", textOutput("sidebar_note"))
@@ -329,46 +393,45 @@ ui <- webawesomePage(
                 class = "badge-row",
                 uiOutput("selection_badges")
               ),
-              wa_badge(textOutput("tab_badge", inline = TRUE), appearance = "accent")
+              wa_badge(textOutput("tab_badge", inline = TRUE), appearance = "filled")
             ),
             wa_container(
               class = "stats-grid",
-              wa_card(
+              wa_container(
                 class = "stat-card",
                 wa_container(
                   class = "wa-stack",
-                  style = "gap: 0.35rem;",
+                  style = "gap: 0.12rem; padding: 0;",
                   span(class = "stat-label", "Rows"),
                   span(class = "stat-value", textOutput("row_count", inline = TRUE))
                 )
               ),
-              wa_card(
+              wa_container(
                 class = "stat-card",
                 wa_container(
                   class = "wa-stack",
-                  style = "gap: 0.35rem;",
+                  style = "gap: 0.12rem; padding: 0;",
                   span(class = "stat-label", "Correlation"),
                   span(class = "stat-value", textOutput("correlation_value", inline = TRUE))
                 )
               ),
-              wa_card(
+              wa_container(
                 class = "stat-card",
                 wa_container(
                   class = "wa-stack",
-                  style = "gap: 0.35rem;",
+                  style = "gap: 0.12rem; padding: 0;",
                   span(class = "stat-label", "Focus"),
                   span(class = "stat-value", textOutput("focus_value", inline = TRUE))
                 )
               )
             ),
             wa_tab_group(
+              class = "workbench-tab-group",
               "surface_tabs",
               active = "chart",
-              nav = list(
-                wa_tab("Chart", panel = "chart"),
-                wa_tab("Summary", panel = "summary"),
-                wa_tab("Details", panel = "details")
-              ),
+              wa_tab("Chart", panel = "chart"),
+              wa_tab("Summary", panel = "summary"),
+              wa_tab("Details", panel = "details"),
               wa_tab_panel(
                 name = "chart",
                 wa_container(
@@ -435,14 +498,14 @@ server <- function(input, output, session) {
     }
   })
 
-  observeEvent(input$preset_sepal, {
-    update_wa_select(session, "x_var", value = "Sepal.Length")
-    update_wa_select(session, "y_var", value = "Sepal.Width")
-  })
-
-  observeEvent(input$preset_petal, {
-    update_wa_select(session, "x_var", value = "Petal.Length")
-    update_wa_select(session, "y_var", value = "Petal.Width")
+  observeEvent(input$preset_mode, {
+    if ((input$preset_mode %||% "sepal") == "sepal") {
+      update_wa_select(session, "x_var", value = "Sepal.Length")
+      update_wa_select(session, "y_var", value = "Sepal.Width")
+    } else {
+      update_wa_select(session, "x_var", value = "Petal.Length")
+      update_wa_select(session, "y_var", value = "Petal.Width")
+    }
   })
 
   observeEvent(input$open_help, {
@@ -460,54 +523,46 @@ server <- function(input, output, session) {
       wa_container(
         class = "wa-stack",
         style = "gap: 0.85rem;",
-        wa_select(
-          "y_var",
-          label = "Y variable",
-          value = "Petal.Width",
-          wa_option("Sepal length", value = "Sepal.Length"),
-          wa_option("Sepal width", value = "Sepal.Width"),
-          wa_option("Petal length", value = "Petal.Length"),
-          wa_option("Petal width", value = "Petal.Width")
-        ),
-        wa_switch("show_smoother", "Show trend line", checked = TRUE)
-      )
-    } else if (active_tab == "summary") {
-      wa_container(
-        class = "wa-stack",
-        style = "gap: 0.85rem;",
-        wa_select(
-          "focus_metric",
-          label = "Summary focus",
-          value = "mean",
-          wa_option("Mean", value = "mean"),
-          wa_option("Median", value = "median"),
-          wa_option("Maximum", value = "max")
-        ),
-        wa_callout(
-          variant = "brand",
-          appearance = "soft",
-          icon = "table-columns",
-          "This tab keeps the same filter state and changes only how the data is summarized."
-        )
+        tags$script(HTML("
+          setTimeout(() => {
+            const y = document.getElementById('y_var');
+            const s = document.getElementById('show_smoother');
+            if (y) y.disabled = false;
+            if (s) s.disabled = false;
+          }, 0);
+        "))
       )
     } else {
       wa_container(
         class = "wa-stack",
         style = "gap: 0.85rem;",
-        wa_select(
-          "detail_focus",
-          label = "Narrative focus",
-          value = "pattern",
-          wa_option("Pattern", value = "pattern"),
-          wa_option("Spread", value = "spread"),
-          wa_option("Recommendation", value = "recommendation")
-        ),
-        wa_callout(
-          variant = "brand",
-          appearance = "soft",
-          icon = "sparkles",
-          "The details tab is where explanatory copy catches up to the current filtered view."
-        )
+        if (active_tab == "summary") {
+          wa_select(
+            "focus_metric",
+            label = "Summary focus",
+            value = "mean",
+            wa_option("Mean", value = "mean"),
+            wa_option("Median", value = "median"),
+            wa_option("Maximum", value = "max")
+          )
+        } else {
+          wa_select(
+            "detail_focus",
+            label = "Narrative focus",
+            value = "pattern",
+            wa_option("Pattern", value = "pattern"),
+            wa_option("Spread", value = "spread"),
+            wa_option("Recommendation", value = "recommendation")
+          )
+        },
+        tags$script(HTML("
+          setTimeout(() => {
+            const y = document.getElementById('y_var');
+            const s = document.getElementById('show_smoother');
+            if (y) y.disabled = true;
+            if (s) s.disabled = true;
+          }, 0);
+        "))
       )
     }
   })
@@ -520,14 +575,14 @@ server <- function(input, output, session) {
     }
 
     tagList(
-      wa_badge(species_label, appearance = "accent"),
+      wa_badge(species_label, appearance = "filled"),
       wa_badge(
         sprintf(
           "%s vs %s",
           input$x_var %||% "Sepal.Length",
           input$y_var %||% "Petal.Width"
         ),
-        appearance = "outlined"
+        appearance = "filled"
       )
     )
   })
@@ -571,23 +626,51 @@ server <- function(input, output, session) {
     data <- filtered_data()
     x_var <- input$x_var %||% "Sepal.Length"
     y_var <- input$y_var %||% "Petal.Width"
+    species <- as.character(data$Species)
+    species_levels <- unique(species)
+    palette <- c(
+      setosa = "#2563eb",
+      versicolor = "#ea580c",
+      virginica = "#059669"
+    )
+    point_colors <- unname(palette[tolower(species)])
+    point_colors[is.na(point_colors)] <- "#475569"
 
-    p <- ggplot(data, aes(x = .data[[x_var]], y = .data[[y_var]], color = Species)) +
-      geom_point(size = 2.8, alpha = 0.85) +
-      labs(x = x_var, y = y_var) +
-      theme_minimal(base_size = 12) +
-      theme(
-        legend.position = "top",
-        panel.grid.minor = element_blank(),
-        panel.grid.major = element_line(color = "#d8dee9"),
-        plot.background = element_rect(fill = "white", color = NA)
-      )
+    graphics::par(
+      mar = c(4.2, 4.2, 1.2, 0.8),
+      bg = "white",
+      col.axis = "#334155",
+      col.lab = "#0f172a"
+    )
 
-    if (isTRUE(input$show_smoother %||% TRUE)) {
-      p <- p + geom_smooth(se = FALSE, linewidth = 0.9, color = "#1d4ed8")
+    graphics::plot(
+      data[[x_var]],
+      data[[y_var]],
+      col = grDevices::adjustcolor(point_colors, alpha.f = 0.82),
+      pch = 19,
+      cex = 1.15,
+      xlab = x_var,
+      ylab = y_var
+    )
+
+    if (isTRUE(input$show_smoother %||% TRUE) && nrow(data) > 1) {
+      fit <- stats::lm(data[[y_var]] ~ data[[x_var]])
+      graphics::abline(fit, col = "#1d4ed8", lwd = 2)
     }
 
-    p
+    legend_colors <- unname(palette[tolower(species_levels)])
+    legend_colors[is.na(legend_colors)] <- "#475569"
+
+    graphics::legend(
+      "top",
+      inset = 0.02,
+      horiz = TRUE,
+      bty = "n",
+      legend = tools::toTitleCase(species_levels),
+      col = legend_colors,
+      pch = 19,
+      pt.cex = 1
+    )
   })
 
   output$summary_table <- renderTable({
@@ -660,10 +743,10 @@ server <- function(input, output, session) {
     wa_container(
       class = "wa-stack",
       style = "gap: 0.5rem;",
-      wa_badge(paste("Tab:", tools::toTitleCase(input$surface_tabs %||% "chart")), appearance = "accent"),
-      wa_badge(paste("Species:", species_label), appearance = "outlined"),
-      wa_badge(paste("X:", input$x_var %||% "Sepal.Length"), appearance = "outlined"),
-      wa_badge(paste("Y:", input$y_var %||% "Petal.Width"), appearance = "outlined")
+      wa_badge(paste("Tab:", tools::toTitleCase(input$surface_tabs %||% "chart")), appearance = "filled"),
+      wa_badge(paste("Species:", species_label), appearance = "filled"),
+      wa_badge(paste("X:", input$x_var %||% "Sepal.Length"), appearance = "filled"),
+      wa_badge(paste("Y:", input$y_var %||% "Petal.Width"), appearance = "filled")
     )
   })
 }
