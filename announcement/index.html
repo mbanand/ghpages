@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>shiny.webawesome announcement prototype</title>
+<title>Announcing shiny.webawesome: a web UI package for R/Shiny</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -54,8 +54,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#tldr" id="toc-tldr" class="nav-link active" data-scroll-target="#tldr">TL;DR</a></li>
-  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background">Background</a></li>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background">Background</a></li>
   <li><a href="#the-whole-game" id="toc-the-whole-game" class="nav-link" data-scroll-target="#the-whole-game">The Whole Game</a></li>
   <li><a href="#design-philosophy" id="toc-design-philosophy" class="nav-link" data-scroll-target="#design-philosophy">Design Philosophy</a></li>
   <li><a href="#shiny-bindings" id="toc-shiny-bindings" class="nav-link" data-scroll-target="#shiny-bindings">Shiny Bindings</a></li>
@@ -68,7 +67,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">shiny.webawesome announcement prototype</h1>
+<h1 class="title">Announcing shiny.webawesome: a web UI package for R/Shiny</h1>
 </div>
 
 
@@ -85,37 +84,33 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
+<style>
+#title-block-header .title {
+  font-size: 1.78rem !important;
+  line-height: 1.15;
+}
+</style>
+<div class="callout callout-style-default callout-note callout-titled" title="TL;DR">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+<span class="screen-reader-only">Note</span>TL;DR
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This is a working prototype for the eventual r-posts.com / R-bloggers announcement. The first goal is to prove that Quarto, Shinylive, webR, R-universe, and the <code>shiny.webawesome</code> runtime can all work together.</p>
+<p><code>shiny.webawesome</code> brings Web Awesome to R Shiny through generated wrappers, reactive bindings, and a bundled runtime. It aims for complete component support while staying close enough to upstream that the Web Awesome docs and examples are directly useful in everyday package use.</p>
+<p><a href="https://CRAN.R-project.org/package=shiny.webawesome" target="_blank" rel="noopener noreferrer">CRAN</a> | <a href="https://mbanand.r-universe.dev/shiny.webawesome" target="_blank" rel="noopener noreferrer">R-universe</a> | <a href="https://www.shiny-webawesome.org" target="_blank" rel="noopener noreferrer">Package website</a> | <a href="https://github.com/mbanand/shiny.webawesome" target="_blank" rel="noopener noreferrer">Source repository</a></p>
 </div>
 </div>
-<section id="tldr" class="level2">
-<h2 class="anchored" data-anchor-id="tldr">TL;DR</h2>
-<p><code>shiny.webawesome</code> brings Web Awesome components to R Shiny through generated R wrappers, Shiny bindings, and a bundled Web Awesome runtime.</p>
-<p>Links to add after CRAN publication:</p>
-<ul>
-<li>CRAN</li>
-<li>Package website</li>
-<li>Source repository</li>
-<li>R-universe</li>
-</ul>
-</section>
 <section id="background" class="level2">
 <h2 class="anchored" data-anchor-id="background">Background</h2>
-<p>Placeholder.</p>
+<p><code>shiny.webawesome</code> started from a perceived gap: Shiny would benefit from a UI library that feels modern, visually polished, and broad enough to support a full app coherently. Web Awesome was a strong fit because it combines rich components, layout and styling utilities, and detailed upstream documentation with a standards-based web-components structure that is straightforward to track from R. That makes it easier for the package to stay close to upstream while still fitting naturally into Shiny.</p>
 </section>
 <section id="the-whole-game" class="level2">
 <h2 class="anchored" data-anchor-id="the-whole-game">The Whole Game</h2>
-<p>This example is intentionally tighter: a small data workbench that keeps the controls visible, keeps the preview visible, and makes every interaction show up immediately in the active tab.</p>
+<p>Here’s a simple, complete example app, rendered via Shinylive.</p>
 <style>
 #quarto-document-content div.sourceCode,
 #quarto-document-content pre.sourceCode {
@@ -418,7 +413,7 @@ ui &lt;- webawesomePage(
                   class = "tab-stack tab-shell",
                   p(
                     class = "tab-copy",
-                    "The chart tab is the live center of gravity. Change a variable or species on the left and the plot responds immediately."
+                    "Change a variable or species on the left and the plot responds immediately."
                   ),
                   wa_container(
                     class = "plot-shell",
@@ -721,6 +716,13 @@ strings so the live app works in Shinylive/webR, while the sibling files remain
 available as copyable assets for a standalone local app.
 -->
 <p>The code for the above example is shown below.</p>
+<p>This example showcases many of the facilities available in the package:</p>
+<ul>
+<li>a visually rich component library</li>
+<li>use of the layout utilities directly available from Web Awesome</li>
+<li>reactive Shiny input bindings</li>
+<li>helpers for executing commands on HTML elements, setting properties, and injecting simple JavaScript snippets</li>
+</ul>
 <div class="example-code-viewer">
 <div class="example-code-viewer-header">
 <div class="example-code-tabs">
@@ -930,7 +932,7 @@ ui &lt;- webawesomePage(
                   class = "tab-stack tab-shell",
                   p(
                     class = "tab-copy",
-                    "The chart tab is the live center of gravity. Change a variable or species on the left and the plot responds immediately."
+                    "Change a variable or species on the left and the plot responds immediately."
                   ),
                   wa_container(
                     class = "plot-shell",
@@ -1494,19 +1496,31 @@ body {
 </section>
 <section id="design-philosophy" class="level2">
 <h2 class="anchored" data-anchor-id="design-philosophy">Design Philosophy</h2>
-<p>Placeholder.</p>
+<p><code>shiny.webawesome</code> is designed to stay close to upstream Web Awesome. Most component wrappers are generated from Web Awesome metadata, which helps preserve upstream names, structure, and behavior while translating the interface into normal R conventions such as <code>snake_case</code>.</p>
+<p>That close alignment has a practical benefit: when you want deeper details, examples, or component-specific guidance, you can usually go straight to the upstream Web Awesome documentation and apply what you find directly in <code>shiny.webawesome</code>. The package currently supports all Web Awesome components, so the upstream docs are a practical reference for day-to-day use.</p>
+<p>To support the server-client model of Shiny, the package adds a small set of page and layout helpers, curated reactive bindings, and a narrow command layer for cases where browser-side interaction goes beyond the generated wrappers.</p>
+<p>The result is a package with a clear default path. Use generated wrappers for ordinary UI, use bindings for meaningful reactive state, and reach for commands or small JavaScript glue when the app needs them.</p>
 </section>
 <section id="shiny-bindings" class="level2">
 <h2 class="anchored" data-anchor-id="shiny-bindings">Shiny Bindings</h2>
-<p>Placeholder.</p>
+<p><code>shiny.webawesome</code> does not forward every browser event and every detail of component telemetry into Shiny. Much component state and interaction detail is better handled locally in the browser rather than turned into server messages. Consequently, the package exposes only a curated set of Shiny bindings that fit Shiny’s reactive model, with an emphasis on meaningful committed state rather than low-level browser event streams.</p>
+<p>In the most common case, a binding publishes a durable semantic value. A select reports its current value, a dialog can report whether it is open, and a tree can report the currently selected item ids. The key idea is that Shiny receives the state the app actually cares about, not the raw event name that happened to produce it.</p>
+<p>Some components are better treated as actions than values. A button is the clearest example: in Shiny, it behaves like a Shiny action input, with each click producing a new input event. A small number of components need both action semantics and a separate value. A dropdown, for example, may need to trigger reactivity on every choice, including repeated selections of the same item, while also exposing the latest selected value.</p>
+<p>This design keeps reactive messaging to the server smaller, clearer, and easier to reason about. If an interaction belongs naturally in Shiny’s input model, <code>shiny.webawesome</code> will expose it as a binding. If it is more naturally a browser-side concern, it is usually a better fit for the command layer or a small amount of JavaScript glue.</p>
+<p>For the full binding categories, semantics, and examples, see the package article: <a href="https://www.shiny-webawesome.org/articles/shiny-bindings.html">Shiny Bindings</a>.</p>
 </section>
 <section id="command-api" class="level2">
 <h2 class="anchored" data-anchor-id="command-api">Command API</h2>
-<p>Placeholder.</p>
+<p><code>shiny.webawesome</code> covers the most common interaction patterns through generated wrappers, Shiny bindings, and update helpers. But sometimes an app still needs to reach into a live browser element directly: set a property, call a method, or add a small browser-local JavaScript snippet.</p>
+<p>For those cases, the package provides a narrow command API. The two main server-side helpers are <code>wa_set_property()</code> and <code>wa_call_method()</code>. They let Shiny code send one-way commands to a browser element identified by <code>id</code>, either by assigning a value to a live property or invoking a browser-side method.</p>
+<p>If a component already has a binding or update helper, that should usually remain the first choice. The command layer is for the cases that fall just outside those built-in paths, where the simplest solution is still to tell the existing browser component to do one specific thing.</p>
+<p>The package also includes <code>wa_js()</code> for a different kind of job: small, app-local JavaScript glue. That is useful when the missing piece is browser-side logic such as listening for an event, reading live component state, or publishing a derived value back to Shiny with <code>Shiny.setInputValue()</code>.</p>
+<p>For more detail and examples, see the package article: <a href="https://www.shiny-webawesome.org/articles/command-api.html">Command API</a>.</p>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>Placeholder.</p>
+<p><code>shiny.webawesome</code> brings a visually rich component library into Shiny while staying close to upstream Web Awesome. That combination gives polished components, useful layout and styling utilities, and a workflow where upstream documentation and examples remain directly relevant throughout app development.</p>
+<p>For more examples, longer articles, and full reference material, see the package website: <a href="https://www.shiny-webawesome.org">shiny-webawesome.org</a>.</p>
 </section>
 
 </main>

@@ -189,7 +189,7 @@ ui <- webawesomePage(
                   class = "tab-stack tab-shell",
                   p(
                     class = "tab-copy",
-                    "The chart tab is the live center of gravity. Change a variable or species on the left and the plot responds immediately."
+                    "Change a variable or species on the left and the plot responds immediately."
                   ),
                   wa_container(
                     class = "plot-shell",
