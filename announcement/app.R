@@ -347,13 +347,12 @@ server <- function(input, output, session) {
     }
   })
 
-  base_plot <- reactive({
+  output$iris_plot <- renderPlot({
     data <- filtered_data()
     x_var <- current_x_var()
     y_var <- current_y_var()
     palette <- c(setosa = "#2563eb", versicolor = "#ea580c", virginica = "#059669")
-
-    ggplot(
+    p <- ggplot(
       data,
       aes(x = .data[[x_var]], y = .data[[y_var]], color = Species)
     ) +
@@ -369,19 +368,11 @@ server <- function(input, output, session) {
         axis.title = element_text(color = "#0f172a"),
         axis.text = element_text(color = "#334155")
       )
-  })
-
-  output$iris_plot <- renderPlot({
-    data <- filtered_data()
-    x_var <- current_x_var()
-    y_var <- current_y_var()
-    p <- base_plot()
 
     if (isTRUE(trend_enabled()) && nrow(data) > 1) {
-      fit <- lm(data[[y_var]] ~ data[[x_var]])
-      p <- p + geom_abline(
-        intercept = coef(fit)[1],
-        slope = coef(fit)[2],
+      p <- p + geom_smooth(
+        method = "lm",
+        se = FALSE,
         color = "#1d4ed8",
         linewidth = 0.9
       )
