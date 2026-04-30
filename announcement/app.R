@@ -22,7 +22,7 @@ variable_choices <- c(
   "Petal width" = "Petal.Width"
 )
 
-wa_select_choices <- function(id, label, value, choices) {
+select_choices <- function(id, label, value, choices) {
   do.call(
     wa_select,
     c(
@@ -58,10 +58,12 @@ if (!exists("css_text", inherits = FALSE) || !exists("js_text", inherits = FALSE
 
 show_shinylive_badge <- isTRUE(get0("show_shinylive_badge", ifnotfound = FALSE))
 
+# Build the demo UI.
 ui <- webawesomePage(
   title = "Iris Workbench",
   tags$style(HTML(css_text)),
   wa_js(js_text),
+  # The drawer acts like a lightweight inspector for the current app state.
   wa_drawer(
     "help_drawer",
     label = "Inspector",
@@ -109,6 +111,7 @@ ui <- webawesomePage(
     class = "workbench-shell",
     wa_container(
       class = "workbench-stage",
+      # This utility row is only shown in the live article embed.
       if (show_shinylive_badge) {
         wa_container(
           class = "workbench-kicker",
@@ -129,14 +132,15 @@ ui <- webawesomePage(
       ),
       wa_container(
         class = "workbench-layout",
+        # Left rail for filters and small app actions.
         wa_card(
           class = "sidebar-card",
           header = "Controls",
           wa_container(
             class = "sidebar-stack",
-            wa_select_choices("species", "Species", "all", species_choices),
-            wa_select_choices("x_var", "X variable", "Sepal.Length", variable_choices),
-            wa_select_choices("y_var", "Y variable", "Sepal.Width", variable_choices),
+            select_choices("species", "Species", "all", species_choices),
+            select_choices("x_var", "X variable", "Sepal.Length", variable_choices),
+            select_choices("y_var", "Y variable", "Sepal.Width", variable_choices),
             wa_switch("show_smoother", "Show trend line"),
             uiOutput("preset_controls"),
             wa_button(
@@ -148,6 +152,7 @@ ui <- webawesomePage(
             p(class = "sidebar-note", textOutput("sidebar_note"))
           )
         ),
+        # Main stage for summary badges, tabs, and the live outputs.
         wa_card(
           class = "preview-card",
           wa_container(
@@ -238,6 +243,7 @@ ui <- webawesomePage(
   )
 )
 
+# Server logic keeps the plot, summaries, details, and inspector in sync.
 server <- function(input, output, session) {
   current_x_var <- reactive(input$x_var %||% "Sepal.Length")
   current_y_var <- reactive(input$y_var %||% "Sepal.Width")
@@ -297,6 +303,7 @@ server <- function(input, output, session) {
     trend_enabled(input$show_smoother)
   })
 
+  # The badges mirror the current filter and variable choices.
   output$selection_badges <- renderUI({
     tagList(
       wa_badge(species_label(), appearance = "filled"),
@@ -342,6 +349,7 @@ server <- function(input, output, session) {
     }
   })
 
+  # The chart stays intentionally base-R simple for a copyable standalone app.
   output$iris_plot <- renderPlot({
     data <- filtered_data()
     x_var <- current_x_var()
@@ -407,6 +415,7 @@ server <- function(input, output, session) {
     summary_df
   }, striped = TRUE, bordered = FALSE, width = "100%", rownames = FALSE)
 
+  # The details tab turns the current state into plain-language explanation.
   output$details_text <- renderText({
     x_var <- current_x_var()
     y_var <- current_y_var()
