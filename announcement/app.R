@@ -146,7 +146,7 @@ ui <- webawesomePage(
               appearance = "accent",
               `data-drawer` = "open help_drawer"
             ),
-            p(class = "sidebar-note", textOutput("sidebar_note"))
+            p(class = "sidebar-note wa-body-s wa-color-text-quiet", textOutput("sidebar_note"))
           )
         ),
         # Main stage for summary badges, tabs, and the live outputs.
@@ -180,7 +180,7 @@ ui <- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "Change a variable or species on the left and the plot responds immediately."
                   ),
                   wa_container(
@@ -194,7 +194,7 @@ ui <- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "The summary tab turns the same filtered data into a compact numeric view."
                   ),
                   wa_select(
@@ -216,19 +216,19 @@ ui <- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "The details tab uses expandable sections that explain the views."
                   ),
                   wa_details(
                     "story_details",
                     summary = "What this view is showing",
                     open = TRUE,
-                    p(class = "details-copy", textOutput("details_text"))
+                    p(class = "details-copy wa-body-s wa-color-text-quiet", textOutput("details_text"))
                   ),
                   wa_details(
                     "change_details",
                     summary = "Settings",
-                    p(class = "details-copy", textOutput("filters_text"))
+                    p(class = "details-copy wa-body-s wa-color-text-quiet", textOutput("filters_text"))
                   )
                 )
               )
@@ -274,7 +274,7 @@ server <- function(input, output, session) {
   output$preset_controls <- renderUI({
     wa_container(
       class = "preset-group",
-      p(class = "preset-label", "Presets"),
+      p(class = "preset-label wa-form-control-label wa-font-size-s", "Presets"),
       wa_radio_group(
         "preset_mode",
         class = "preset-radios",

@@ -203,8 +203,8 @@ This example showcases many of the facilities available in the package:
 - a visually rich component library
 - direct use of Web Awesome layout utilities such as `wa-stack`,
   `wa-cluster`, `wa-gap-*`, and `wa-align-*` classes
-- styling through Web Awesome design tokens such as `--wa-color-*` and
-  `--wa-font-*`
+- styling through Web Awesome design tokens and classes such as
+  `--wa-color-*`, `--wa-font-*`, and `wa-body-*`
 - reactive Shiny input bindings
 - helpers for executing commands on HTML elements, setting properties, and
   injecting simple JavaScript snippets

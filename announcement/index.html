@@ -282,7 +282,7 @@ stat_card &lt;- function(label, output_id) {
 }
 
 show_shinylive_badge &lt;- TRUE
-css_text &lt;- "/* Store this file next to app.R as app.css. */\n\nbody {\n  margin: 0;\n  background: var(--wa-color-surface-default);\n  color: var(--wa-color-text-normal, #1f2937);\n  font-family: var(--wa-font-family-body, 'Segoe UI', sans-serif);\n}\n\n.workbench-shell {\n  padding: 14px;\n  background:\n    radial-gradient(circle at top left, color-mix(in srgb, var(--wa-color-brand-fill-loud) 16%, transparent), transparent 28%),\n    linear-gradient(180deg, color-mix(in srgb, var(--wa-color-surface-default) 90%, white), var(--wa-color-surface-default));\n}\n\n.workbench-stage {\n  width: min(1080px, 100%);\n  margin: 0 auto;\n  display: grid;\n  gap: 12px;\n}\n\n.workbench-kicker {\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 72%, white);\n  font-size: 0.88rem;\n  font-weight: 700;\n}\n\n.workbench-layout {\n  display: grid;\n  grid-template-columns: 280px minmax(0, 1fr);\n  gap: 12px;\n  align-items: stretch;\n}\n\n.title-card,\n.sidebar-card,\n.preview-card,\n.stat-card {\n  --wa-panel-border-radius: 22px;\n  border: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 80%, white);\n  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);\n}\n\n.title-card,\n.preview-card {\n  background: color-mix(in srgb, var(--wa-color-surface-default) 92%, white);\n}\n\n.preview-card {\n  height: 100%;\n}\n\n.sidebar-card {\n  background: color-mix(in srgb, var(--wa-color-neutral-fill-normal) 12%, white);\n  position: sticky;\n  top: 0;\n  height: 100%;\n}\n\n.title-stack,\n.sidebar-stack,\n.preview-stack,\n.stats-grid,\n.tab-stack {\n  display: grid;\n  gap: 10px;\n}\n\n.title-line {\n  margin: 0;\n  font-size: 1.95rem;\n  line-height: 1;\n  letter-spacing: -0.03em;\n}\n\n.title-copy,\n.sidebar-note,\n.tab-copy,\n.details-copy {\n  margin: 0;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 72%, white);\n  line-height: 1.45;\n}\n\n.preset-group {\n  display: grid;\n  gap: 0.55rem;\n}\n\n.stats-grid {\n  grid-template-columns: repeat(3, minmax(110px, 150px));\n  gap: 8px;\n  align-items: start;\n}\n\n.stat-card {\n  background: color-mix(in srgb, var(--wa-color-brand-fill-loud) 4%, white);\n  box-shadow: none;\n  border-radius: 18px;\n  padding: 0.62rem 0.85rem;\n}\n\n.stat-label {\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);\n  font-size: 0.68rem;\n  text-transform: uppercase;\n  font-weight: 800;\n  letter-spacing: 0.08em;\n}\n\n.stat-value {\n  font-size: 1rem;\n  font-weight: 800;\n  line-height: 1.1;\n}\n\n.preview-header {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 10px;\n  align-items: center;\n}\n\n.plot-shell,\n.table-shell {\n  border-radius: 18px;\n  background: color-mix(in srgb, var(--wa-color-surface-default) 96%, white);\n  border: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 80%, white);\n  padding: 7px 9px;\n}\n\n.table-shell table {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: 0.92rem;\n}\n\n.table-shell th,\n.table-shell td {\n  padding: 8px 10px;\n  border-bottom: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 70%, white);\n  text-align: left;\n}\n\n.table-shell th:last-child,\n.table-shell td:last-child {\n  text-align: right;\n}\n\n.table-shell th {\n  font-size: 0.76rem;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 58%, white);\n}\n\n.tab-shell {\n  min-height: 330px;\n}\n\n.preset-label {\n  margin: 0;\n  font-size: 0.82rem;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  font-weight: 800;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);\n}\n\n.preset-radios {\n  width: 100%;\n}\n\n.preset-radios::part(form-control-input) {\n  gap: 1rem;\n}\n\n.preset-radios wa-radio {\n  margin-right: 1rem;\n}\n\n@media (max-width: 860px) {\n  .workbench-layout,\n  .stats-grid {\n    grid-template-columns: 1fr;\n  }\n\n  .sidebar-card {\n    position: static;\n  }\n}"
+css_text &lt;- "/* Store this file next to app.R as app.css. */\n\nbody {\n  margin: 0;\n  background: var(--wa-color-surface-default);\n  color: var(--wa-color-text-normal, #1f2937);\n  font-family: var(--wa-font-family-body, 'Segoe UI', sans-serif);\n}\n\n.workbench-shell {\n  padding: 14px;\n  background:\n    radial-gradient(circle at top left, color-mix(in srgb, var(--wa-color-brand-fill-loud) 16%, transparent), transparent 28%),\n    linear-gradient(180deg, color-mix(in srgb, var(--wa-color-surface-default) 90%, white), var(--wa-color-surface-default));\n}\n\n.workbench-stage {\n  width: min(1080px, 100%);\n  margin: 0 auto;\n  display: grid;\n  gap: 12px;\n}\n\n.workbench-kicker {\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 72%, white);\n  font-size: 0.88rem;\n  font-weight: 700;\n}\n\n.workbench-layout {\n  display: grid;\n  grid-template-columns: 280px minmax(0, 1fr);\n  gap: 12px;\n  align-items: stretch;\n}\n\n.title-card,\n.sidebar-card,\n.preview-card,\n.stat-card {\n  --wa-panel-border-radius: 22px;\n  border: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 80%, white);\n  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);\n}\n\n.title-card,\n.preview-card {\n  background: color-mix(in srgb, var(--wa-color-surface-default) 92%, white);\n}\n\n.preview-card {\n  height: 100%;\n}\n\n.sidebar-card {\n  background: color-mix(in srgb, var(--wa-color-neutral-fill-normal) 12%, white);\n  position: sticky;\n  top: 0;\n  height: 100%;\n}\n\n.title-stack,\n.sidebar-stack,\n.preview-stack,\n.stats-grid,\n.tab-stack {\n  display: grid;\n  gap: 10px;\n}\n\n.title-line {\n  margin: 0;\n  font-size: 1.95rem;\n  line-height: 1;\n  letter-spacing: -0.03em;\n}\n\n.title-copy,\n.sidebar-note,\n.tab-copy,\n.details-copy {\n  margin: 0;\n  line-height: 1.45;\n}\n\n.preset-group {\n  display: grid;\n  gap: 0.55rem;\n}\n\n.stats-grid {\n  grid-template-columns: repeat(3, minmax(110px, 150px));\n  gap: 8px;\n  align-items: start;\n}\n\n.stat-card {\n  background: color-mix(in srgb, var(--wa-color-brand-fill-loud) 4%, white);\n  box-shadow: none;\n  border-radius: 18px;\n  padding: 0.62rem 0.85rem;\n}\n\n.stat-label {\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);\n  font-size: 0.68rem;\n  text-transform: uppercase;\n  font-weight: 800;\n  letter-spacing: 0.08em;\n}\n\n.stat-value {\n  font-size: 1rem;\n  font-weight: 800;\n  line-height: 1.1;\n}\n\n.preview-header {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 10px;\n  align-items: center;\n}\n\n.plot-shell,\n.table-shell {\n  border-radius: 18px;\n  background: color-mix(in srgb, var(--wa-color-surface-default) 96%, white);\n  border: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 80%, white);\n  padding: 7px 9px;\n}\n\n.table-shell table {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: 0.92rem;\n}\n\n.table-shell th,\n.table-shell td {\n  padding: 8px 10px;\n  border-bottom: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 70%, white);\n  text-align: left;\n}\n\n.table-shell th:last-child,\n.table-shell td:last-child {\n  text-align: right;\n}\n\n.table-shell th {\n  font-size: 0.76rem;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 58%, white);\n}\n\n.tab-shell {\n  min-height: 330px;\n}\n\n.preset-label {\n  margin: 0;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n}\n\n.preset-radios {\n  width: 100%;\n}\n\n.preset-radios::part(form-control-input) {\n  gap: 1rem;\n}\n\n.preset-radios wa-radio {\n  margin-right: 1rem;\n}\n\n@media (max-width: 860px) {\n  .workbench-layout,\n  .stats-grid {\n    grid-template-columns: 1fr;\n  }\n\n  .sidebar-card {\n    position: static;\n  }\n}"
 js_text &lt;- "// Store this file next to app.R as app.js.\n\n(function() {\n  function syncWorkbenchControls() {\n    const tabs = document.getElementById('surface_tabs');\n    const trend = document.getElementById('show_smoother');\n\n    if (!tabs || !trend) {\n      return;\n    }\n\n    trend.disabled = tabs.active !== 'chart';\n  }\n\n  function bindWorkbenchControls() {\n    const tabs = document.getElementById('surface_tabs');\n\n    if (!tabs || tabs.dataset.workbenchControlsBound) {\n      syncWorkbenchControls();\n      return;\n    }\n\n    tabs.dataset.workbenchControlsBound = 'true';\n    tabs.addEventListener('wa-tab-show', syncWorkbenchControls);\n    syncWorkbenchControls();\n  }\n\n  document.addEventListener('shiny:connected', function() {\n    setTimeout(bindWorkbenchControls, 0);\n  }, { once: true });\n\n  setTimeout(bindWorkbenchControls, 0);\n})();"
 
 show_shinylive_badge &lt;- isTRUE(get0("show_shinylive_badge", ifnotfound = FALSE))
@@ -375,7 +375,7 @@ ui &lt;- webawesomePage(
               appearance = "accent",
               `data-drawer` = "open help_drawer"
             ),
-            p(class = "sidebar-note", textOutput("sidebar_note"))
+            p(class = "sidebar-note wa-body-s wa-color-text-quiet", textOutput("sidebar_note"))
           )
         ),
         # Main stage for summary badges, tabs, and the live outputs.
@@ -409,7 +409,7 @@ ui &lt;- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "Change a variable or species on the left and the plot responds immediately."
                   ),
                   wa_container(
@@ -423,7 +423,7 @@ ui &lt;- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "The summary tab turns the same filtered data into a compact numeric view."
                   ),
                   wa_select(
@@ -445,19 +445,19 @@ ui &lt;- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "The details tab uses expandable sections that explain the views."
                   ),
                   wa_details(
                     "story_details",
                     summary = "What this view is showing",
                     open = TRUE,
-                    p(class = "details-copy", textOutput("details_text"))
+                    p(class = "details-copy wa-body-s wa-color-text-quiet", textOutput("details_text"))
                   ),
                   wa_details(
                     "change_details",
                     summary = "Settings",
-                    p(class = "details-copy", textOutput("filters_text"))
+                    p(class = "details-copy wa-body-s wa-color-text-quiet", textOutput("filters_text"))
                   )
                 )
               )
@@ -503,7 +503,7 @@ server &lt;- function(input, output, session) {
   output$preset_controls &lt;- renderUI({
     wa_container(
       class = "preset-group",
-      p(class = "preset-label", "Presets"),
+      p(class = "preset-label wa-form-control-label wa-font-size-s", "Presets"),
       wa_radio_group(
         "preset_mode",
         class = "preset-radios",
@@ -686,7 +686,7 @@ available as copyable assets for a standalone local app.
 <ul>
 <li>a visually rich component library</li>
 <li>direct use of Web Awesome layout utilities such as <code>wa-stack</code>, <code>wa-cluster</code>, <code>wa-gap-*</code>, and <code>wa-align-*</code> classes</li>
-<li>styling through Web Awesome design tokens such as <code>--wa-color-*</code> and <code>--wa-font-*</code></li>
+<li>styling through Web Awesome design tokens and classes such as <code>--wa-color-*</code>, <code>--wa-font-*</code>, and <code>wa-body-*</code></li>
 <li>reactive Shiny input bindings</li>
 <li>helpers for executing commands on HTML elements, setting properties, and injecting simple JavaScript snippets</li>
 </ul>
@@ -856,7 +856,7 @@ ui &lt;- webawesomePage(
               appearance = "accent",
               `data-drawer` = "open help_drawer"
             ),
-            p(class = "sidebar-note", textOutput("sidebar_note"))
+            p(class = "sidebar-note wa-body-s wa-color-text-quiet", textOutput("sidebar_note"))
           )
         ),
         # Main stage for summary badges, tabs, and the live outputs.
@@ -890,7 +890,7 @@ ui &lt;- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "Change a variable or species on the left and the plot responds immediately."
                   ),
                   wa_container(
@@ -904,7 +904,7 @@ ui &lt;- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "The summary tab turns the same filtered data into a compact numeric view."
                   ),
                   wa_select(
@@ -926,19 +926,19 @@ ui &lt;- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "The details tab uses expandable sections that explain the views."
                   ),
                   wa_details(
                     "story_details",
                     summary = "What this view is showing",
                     open = TRUE,
-                    p(class = "details-copy", textOutput("details_text"))
+                    p(class = "details-copy wa-body-s wa-color-text-quiet", textOutput("details_text"))
                   ),
                   wa_details(
                     "change_details",
                     summary = "Settings",
-                    p(class = "details-copy", textOutput("filters_text"))
+                    p(class = "details-copy wa-body-s wa-color-text-quiet", textOutput("filters_text"))
                   )
                 )
               )
@@ -984,7 +984,7 @@ server &lt;- function(input, output, session) {
   output$preset_controls &lt;- renderUI({
     wa_container(
       class = "preset-group",
-      p(class = "preset-label", "Presets"),
+      p(class = "preset-label wa-form-control-label wa-font-size-s", "Presets"),
       wa_radio_group(
         "preset_mode",
         class = "preset-radios",
@@ -1241,7 +1241,6 @@ body {
 .tab-copy,
 .details-copy {
   margin: 0;
-  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 72%, white);
   line-height: 1.45;
 }
 
@@ -1324,11 +1323,8 @@ body {
 
 .preset-label {
   margin: 0;
-  font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-weight: 800;
-  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);
 }
 
 .preset-radios {

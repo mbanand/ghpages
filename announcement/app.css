@@ -80,7 +80,6 @@ body {
 .tab-copy,
 .details-copy {
   margin: 0;
-  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 72%, white);
   line-height: 1.45;
 }
 
@@ -163,11 +162,8 @@ body {
 
 .preset-label {
   margin: 0;
-  font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-weight: 800;
-  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);
 }
 
 .preset-radios {
