@@ -357,7 +357,7 @@ server <- function(input, output, session) {
     if (active_tab == "summary") {
       tools::toTitleCase(input$focus_metric %||% "mean")
     } else if (active_tab == "details") {
-      "Filters"
+      "Details"
     } else {
       if (isTRUE(trend_enabled())) "Trend on" else "Trend off"
     }
