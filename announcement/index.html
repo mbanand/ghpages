@@ -278,11 +278,12 @@ document.addEventListener("DOMContentLoaded", () => {
 #| standalone: true
 #| viewerHeight: 810
 
-# Store this file next to app.css and app.js.
+# Store this file as app.R next to app.css and app.js.
 
 library(shiny)
 library(shiny.webawesome)
 library(htmltools)
+library(ggplot2)
 
 `%||%` &lt;- function(x, y) {
   if (is.null(x)) y else x
@@ -620,52 +621,47 @@ server &lt;- function(input, output, session) {
     }
   })
 
-  # The chart stays intentionally base-R simple for a copyable standalone app.
+  base_plot &lt;- reactive({
+    data &lt;- filtered_data()
+    x_var &lt;- current_x_var()
+    y_var &lt;- current_y_var()
+    palette &lt;- c(setosa = "#2563eb", versicolor = "#ea580c", virginica = "#059669")
+
+    ggplot(
+      data,
+      aes(x = .data[[x_var]], y = .data[[y_var]], color = Species)
+    ) +
+      geom_point(size = 2.2, alpha = 0.82) +
+      scale_color_manual(values = palette) +
+      labs(x = x_var, y = y_var, color = NULL) +
+      theme_minimal(base_size = 12) +
+      theme(
+        legend.position = "top",
+        legend.justification = "left",
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_line(color = "#e2e8f0"),
+        axis.title = element_text(color = "#0f172a"),
+        axis.text = element_text(color = "#334155")
+      )
+  })
+
   output$iris_plot &lt;- renderPlot({
     data &lt;- filtered_data()
     x_var &lt;- current_x_var()
     y_var &lt;- current_y_var()
-    species &lt;- as.character(data$Species)
-    species_levels &lt;- unique(species)
-    palette &lt;- c(setosa = "#2563eb", versicolor = "#ea580c", virginica = "#059669")
-    point_colors &lt;- unname(palette[tolower(species)])
-    point_colors[is.na(point_colors)] &lt;- "#475569"
-
-    graphics::par(
-      mar = c(4.2, 4.2, 1.2, 0.8),
-      bg = "white",
-      col.axis = "#334155",
-      col.lab = "#0f172a"
-    )
-
-    graphics::plot(
-      data[[x_var]],
-      data[[y_var]],
-      col = grDevices::adjustcolor(point_colors, alpha.f = 0.82),
-      pch = 19,
-      cex = 1.15,
-      xlab = x_var,
-      ylab = y_var
-    )
+    p &lt;- base_plot()
 
     if (isTRUE(trend_enabled()) &amp;&amp; nrow(data) &gt; 1) {
-      fit &lt;- stats::lm(data[[y_var]] ~ data[[x_var]])
-      graphics::abline(fit, col = "#1d4ed8", lwd = 2)
+      fit &lt;- lm(data[[y_var]] ~ data[[x_var]])
+      p &lt;- p + geom_abline(
+        intercept = coef(fit)[1],
+        slope = coef(fit)[2],
+        color = "#1d4ed8",
+        linewidth = 0.9
+      )
     }
 
-    legend_colors &lt;- unname(palette[tolower(species_levels)])
-    legend_colors[is.na(legend_colors)] &lt;- "#475569"
-
-    graphics::legend(
-      "top",
-      inset = 0.02,
-      horiz = TRUE,
-      bty = "n",
-      legend = tools::toTitleCase(species_levels),
-      col = legend_colors,
-      pch = 19,
-      pt.cex = 1
-    )
+    p
   })
 
   output$summary_table &lt;- renderTable({
@@ -733,7 +729,7 @@ available as copyable assets for a standalone local app.
 <li>direct use of Web Awesome layout utilities such as <code>wa-stack</code>, <code>wa-cluster</code>, <code>wa-gap-*</code>, and <code>wa-align-*</code> classes</li>
 <li>styling through Web Awesome design tokens and classes such as <code>--wa-color-*</code>, <code>--wa-font-*</code>, and <code>wa-body-*</code></li>
 <li>reactive Shiny input bindings</li>
-<li>helpers for executing commands on HTML elements, setting properties, and injecting simple JavaScript snippets</li>
+<li>helpers for calling methods on HTML elements, setting properties, and injecting simple JavaScript snippets</li>
 </ul>
 <div class="example-code-viewer">
 <div class="example-code-viewer-header">
@@ -753,11 +749,12 @@ JS
 </button>
 </div>
 <div class="example-code-pane is-active" data-pane="r">
-<pre class="example-code-pre"><code># Store this file next to app.css and app.js.
+<pre class="example-code-pre"><code># Store this file as app.R next to app.css and app.js.
 
 library(shiny)
 library(shiny.webawesome)
 library(htmltools)
+library(ggplot2)
 
 `%||%` &lt;- function(x, y) {
   if (is.null(x)) y else x
@@ -1101,52 +1098,47 @@ server &lt;- function(input, output, session) {
     }
   })
 
-  # The chart stays intentionally base-R simple for a copyable standalone app.
+  base_plot &lt;- reactive({
+    data &lt;- filtered_data()
+    x_var &lt;- current_x_var()
+    y_var &lt;- current_y_var()
+    palette &lt;- c(setosa = "#2563eb", versicolor = "#ea580c", virginica = "#059669")
+
+    ggplot(
+      data,
+      aes(x = .data[[x_var]], y = .data[[y_var]], color = Species)
+    ) +
+      geom_point(size = 2.2, alpha = 0.82) +
+      scale_color_manual(values = palette) +
+      labs(x = x_var, y = y_var, color = NULL) +
+      theme_minimal(base_size = 12) +
+      theme(
+        legend.position = "top",
+        legend.justification = "left",
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_line(color = "#e2e8f0"),
+        axis.title = element_text(color = "#0f172a"),
+        axis.text = element_text(color = "#334155")
+      )
+  })
+
   output$iris_plot &lt;- renderPlot({
     data &lt;- filtered_data()
     x_var &lt;- current_x_var()
     y_var &lt;- current_y_var()
-    species &lt;- as.character(data$Species)
-    species_levels &lt;- unique(species)
-    palette &lt;- c(setosa = "#2563eb", versicolor = "#ea580c", virginica = "#059669")
-    point_colors &lt;- unname(palette[tolower(species)])
-    point_colors[is.na(point_colors)] &lt;- "#475569"
-
-    graphics::par(
-      mar = c(4.2, 4.2, 1.2, 0.8),
-      bg = "white",
-      col.axis = "#334155",
-      col.lab = "#0f172a"
-    )
-
-    graphics::plot(
-      data[[x_var]],
-      data[[y_var]],
-      col = grDevices::adjustcolor(point_colors, alpha.f = 0.82),
-      pch = 19,
-      cex = 1.15,
-      xlab = x_var,
-      ylab = y_var
-    )
+    p &lt;- base_plot()
 
     if (isTRUE(trend_enabled()) &amp;&amp; nrow(data) &gt; 1) {
-      fit &lt;- stats::lm(data[[y_var]] ~ data[[x_var]])
-      graphics::abline(fit, col = "#1d4ed8", lwd = 2)
+      fit &lt;- lm(data[[y_var]] ~ data[[x_var]])
+      p &lt;- p + geom_abline(
+        intercept = coef(fit)[1],
+        slope = coef(fit)[2],
+        color = "#1d4ed8",
+        linewidth = 0.9
+      )
     }
 
-    legend_colors &lt;- unname(palette[tolower(species_levels)])
-    legend_colors[is.na(legend_colors)] &lt;- "#475569"
-
-    graphics::legend(
-      "top",
-      inset = 0.02,
-      horiz = TRUE,
-      bty = "n",
-      legend = tools::toTitleCase(species_levels),
-      col = legend_colors,
-      pch = 19,
-      pt.cex = 1
-    )
+    p
   })
 
   output$summary_table &lt;- renderTable({

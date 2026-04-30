@@ -1,8 +1,9 @@
-# Store this file next to app.css and app.js.
+# Store this file as app.R next to app.css and app.js.
 
 library(shiny)
 library(shiny.webawesome)
 library(htmltools)
+library(ggplot2)
 
 `%||%` <- function(x, y) {
   if (is.null(x)) y else x
@@ -346,52 +347,47 @@ server <- function(input, output, session) {
     }
   })
 
-  # The chart stays intentionally base-R simple for a copyable standalone app.
+  base_plot <- reactive({
+    data <- filtered_data()
+    x_var <- current_x_var()
+    y_var <- current_y_var()
+    palette <- c(setosa = "#2563eb", versicolor = "#ea580c", virginica = "#059669")
+
+    ggplot(
+      data,
+      aes(x = .data[[x_var]], y = .data[[y_var]], color = Species)
+    ) +
+      geom_point(size = 2.2, alpha = 0.82) +
+      scale_color_manual(values = palette) +
+      labs(x = x_var, y = y_var, color = NULL) +
+      theme_minimal(base_size = 12) +
+      theme(
+        legend.position = "top",
+        legend.justification = "left",
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_line(color = "#e2e8f0"),
+        axis.title = element_text(color = "#0f172a"),
+        axis.text = element_text(color = "#334155")
+      )
+  })
+
   output$iris_plot <- renderPlot({
     data <- filtered_data()
     x_var <- current_x_var()
     y_var <- current_y_var()
-    species <- as.character(data$Species)
-    species_levels <- unique(species)
-    palette <- c(setosa = "#2563eb", versicolor = "#ea580c", virginica = "#059669")
-    point_colors <- unname(palette[tolower(species)])
-    point_colors[is.na(point_colors)] <- "#475569"
-
-    graphics::par(
-      mar = c(4.2, 4.2, 1.2, 0.8),
-      bg = "white",
-      col.axis = "#334155",
-      col.lab = "#0f172a"
-    )
-
-    graphics::plot(
-      data[[x_var]],
-      data[[y_var]],
-      col = grDevices::adjustcolor(point_colors, alpha.f = 0.82),
-      pch = 19,
-      cex = 1.15,
-      xlab = x_var,
-      ylab = y_var
-    )
+    p <- base_plot()
 
     if (isTRUE(trend_enabled()) && nrow(data) > 1) {
-      fit <- stats::lm(data[[y_var]] ~ data[[x_var]])
-      graphics::abline(fit, col = "#1d4ed8", lwd = 2)
+      fit <- lm(data[[y_var]] ~ data[[x_var]])
+      p <- p + geom_abline(
+        intercept = coef(fit)[1],
+        slope = coef(fit)[2],
+        color = "#1d4ed8",
+        linewidth = 0.9
+      )
     }
 
-    legend_colors <- unname(palette[tolower(species_levels)])
-    legend_colors[is.na(legend_colors)] <- "#475569"
-
-    graphics::legend(
-      "top",
-      inset = 0.02,
-      horiz = TRUE,
-      bty = "n",
-      legend = tools::toTitleCase(species_levels),
-      col = legend_colors,
-      pch = 19,
-      pt.cex = 1
-    )
+    p
   })
 
   output$summary_table <- renderTable({

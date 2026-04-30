@@ -251,7 +251,7 @@ This example showcases many of the facilities available in the package:
 - styling through Web Awesome design tokens and classes such as
   `--wa-color-*`, `--wa-font-*`, and `wa-body-*`
 - reactive Shiny input bindings
-- helpers for executing commands on HTML elements, setting properties, and
+- helpers for calling methods on HTML elements, setting properties, and
   injecting simple JavaScript snippets
 
 ```{r}
