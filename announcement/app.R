@@ -8,6 +8,44 @@ library(htmltools)
   if (is.null(x)) y else x
 }
 
+species_choices <- c(
+  "All species" = "all",
+  "Setosa" = "setosa",
+  "Versicolor" = "versicolor",
+  "Virginica" = "virginica"
+)
+
+variable_choices <- c(
+  "Sepal length" = "Sepal.Length",
+  "Sepal width" = "Sepal.Width",
+  "Petal length" = "Petal.Length",
+  "Petal width" = "Petal.Width"
+)
+
+wa_select_choices <- function(id, label, value, choices) {
+  do.call(
+    wa_select,
+    c(
+      list(id, label = label, value = value),
+      lapply(names(choices), function(name) {
+        wa_option(name, value = choices[[name]])
+      })
+    )
+  )
+}
+
+stat_card <- function(label, output_id) {
+  wa_container(
+    class = "stat-card",
+    wa_container(
+      class = "wa-stack",
+      style = "gap: 0.12rem; padding: 0;",
+      span(class = "stat-label", label),
+      span(class = "stat-value", textOutput(output_id, inline = TRUE))
+    )
+  )
+}
+
 if (!exists("css_text", inherits = FALSE) || !exists("js_text", inherits = FALSE)) {
   app_dir <- tryCatch(
     dirname(normalizePath(sys.frame(1)$ofile)),
@@ -96,33 +134,9 @@ ui <- webawesomePage(
           header = "Controls",
           wa_container(
             class = "sidebar-stack",
-            wa_select(
-              "species",
-              label = "Species",
-              value = "all",
-              wa_option("All species", value = "all"),
-              wa_option("Setosa", value = "setosa"),
-              wa_option("Versicolor", value = "versicolor"),
-              wa_option("Virginica", value = "virginica")
-            ),
-            wa_select(
-              "x_var",
-              label = "X variable",
-              value = "Sepal.Length",
-              wa_option("Sepal length", value = "Sepal.Length"),
-              wa_option("Sepal width", value = "Sepal.Width"),
-              wa_option("Petal length", value = "Petal.Length"),
-              wa_option("Petal width", value = "Petal.Width")
-            ),
-            wa_select(
-              "y_var",
-              label = "Y variable",
-              value = "Sepal.Width",
-              wa_option("Sepal length", value = "Sepal.Length"),
-              wa_option("Sepal width", value = "Sepal.Width"),
-              wa_option("Petal length", value = "Petal.Length"),
-              wa_option("Petal width", value = "Petal.Width")
-            ),
+            wa_select_choices("species", "Species", "all", species_choices),
+            wa_select_choices("x_var", "X variable", "Sepal.Length", variable_choices),
+            wa_select_choices("y_var", "Y variable", "Sepal.Width", variable_choices),
             wa_switch("show_smoother", "Show trend line"),
             uiOutput("preset_controls"),
             wa_button(
@@ -148,33 +162,9 @@ ui <- webawesomePage(
             ),
             wa_container(
               class = "stats-grid",
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Rows"),
-                  span(class = "stat-value", textOutput("row_count", inline = TRUE))
-                )
-              ),
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Correlation"),
-                  span(class = "stat-value", textOutput("correlation_value", inline = TRUE))
-                )
-              ),
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Focus"),
-                  span(class = "stat-value", textOutput("focus_value", inline = TRUE))
-                )
-              )
+              stat_card("Rows", "row_count"),
+              stat_card("Correlation", "correlation_value"),
+              stat_card("Focus", "focus_value")
             ),
             wa_tab_group(
               class = "workbench-tab-group",
@@ -272,6 +262,10 @@ server <- function(input, output, session) {
   current_x_var <- reactive(input$x_var %||% "Sepal.Length")
   current_y_var <- reactive(input$y_var %||% "Sepal.Width")
   trend_enabled <- reactiveVal(FALSE)
+  species_label <- reactive({
+    species <- input$species %||% "all"
+    if (species == "all") "All species" else tools::toTitleCase(species)
+  })
 
   current_preset <- reactive({
     x_var <- current_x_var()
@@ -324,14 +318,8 @@ server <- function(input, output, session) {
   })
 
   output$selection_badges <- renderUI({
-    species_label <- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     tagList(
-      wa_badge(species_label, appearance = "filled"),
+      wa_badge(species_label(), appearance = "filled"),
       wa_badge(
         sprintf("%s vs %s", current_x_var(), current_y_var()),
         appearance = "filled"
@@ -448,14 +436,8 @@ server <- function(input, output, session) {
   })
 
   output$filters_text <- renderText({
-    species_label <- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     paste(
-      "Species filter:", species_label, ".",
+      "Species filter:", species_label(), ".",
       "X variable:", current_x_var(), ".",
       "Y variable:", current_y_var(), ".",
       if (isTRUE(trend_enabled())) "Trend line: on." else "Trend line: off."
@@ -463,17 +445,11 @@ server <- function(input, output, session) {
   })
 
   output$inspector_state <- renderUI({
-    species_label <- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     wa_container(
       class = "wa-stack",
       style = "gap: 0.5rem;",
       wa_badge(paste("Tab:", tools::toTitleCase(input$surface_tabs %||% "chart")), appearance = "filled"),
-      wa_badge(paste("Species:", species_label), appearance = "filled"),
+      wa_badge(paste("Species:", species_label()), appearance = "filled"),
       wa_badge(paste("X:", current_x_var()), appearance = "filled"),
       wa_badge(paste("Y:", current_y_var()), appearance = "filled")
     )

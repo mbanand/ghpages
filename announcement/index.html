@@ -238,8 +238,46 @@ library(htmltools)
   if (is.null(x)) y else x
 }
 
+species_choices &lt;- c(
+  "All species" = "all",
+  "Setosa" = "setosa",
+  "Versicolor" = "versicolor",
+  "Virginica" = "virginica"
+)
+
+variable_choices &lt;- c(
+  "Sepal length" = "Sepal.Length",
+  "Sepal width" = "Sepal.Width",
+  "Petal length" = "Petal.Length",
+  "Petal width" = "Petal.Width"
+)
+
+wa_select_choices &lt;- function(id, label, value, choices) {
+  do.call(
+    wa_select,
+    c(
+      list(id, label = label, value = value),
+      lapply(names(choices), function(name) {
+        wa_option(name, value = choices[[name]])
+      })
+    )
+  )
+}
+
+stat_card &lt;- function(label, output_id) {
+  wa_container(
+    class = "stat-card",
+    wa_container(
+      class = "wa-stack",
+      style = "gap: 0.12rem; padding: 0;",
+      span(class = "stat-label", label),
+      span(class = "stat-value", textOutput(output_id, inline = TRUE))
+    )
+  )
+}
+
 show_shinylive_badge &lt;- TRUE
-css_text &lt;- "/* Store this file next to app.R as app.css. */\n\nbody {\n  margin: 0;\n  background: var(--wa-color-surface-default);\n  color: var(--wa-color-text-normal, #1f2937);\n  font-family: var(--wa-font-family-body, 'Segoe UI', sans-serif);\n}\n\n.workbench-shell {\n  padding: 14px;\n  background:\n    radial-gradient(circle at top left, color-mix(in srgb, var(--wa-color-brand-fill-loud) 16%, transparent), transparent 28%),\n    linear-gradient(180deg, color-mix(in srgb, var(--wa-color-surface-default) 90%, white), var(--wa-color-surface-default));\n}\n\n.workbench-stage {\n  width: min(1080px, 100%);\n  margin: 0 auto;\n  display: grid;\n  gap: 12px;\n}\n\n.workbench-kicker {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 72%, white);\n  font-size: 0.88rem;\n  font-weight: 700;\n}\n\n.workbench-layout {\n  display: grid;\n  grid-template-columns: 280px minmax(0, 1fr);\n  gap: 12px;\n  align-items: stretch;\n}\n\n.title-card,\n.sidebar-card,\n.preview-card,\n.stat-card {\n  --wa-panel-border-radius: 22px;\n  border: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 80%, white);\n  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);\n}\n\n.title-card,\n.preview-card {\n  background: color-mix(in srgb, var(--wa-color-surface-default) 92%, white);\n}\n\n.preview-card {\n  height: 100%;\n}\n\n.sidebar-card {\n  background: color-mix(in srgb, var(--wa-color-neutral-fill-normal) 12%, white);\n  position: sticky;\n  top: 0;\n  height: 100%;\n}\n\n.title-stack,\n.sidebar-stack,\n.preview-stack,\n.stats-grid,\n.tab-stack {\n  display: grid;\n  gap: 10px;\n}\n\n.title-line {\n  margin: 0;\n  font-size: 1.95rem;\n  line-height: 1;\n  letter-spacing: -0.03em;\n}\n\n.title-copy,\n.sidebar-note,\n.tab-copy,\n.details-copy {\n  margin: 0;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 72%, white);\n  line-height: 1.45;\n}\n\n.badge-row {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  align-items: center;\n}\n\n.preset-group {\n  display: grid;\n  gap: 0.55rem;\n}\n\n.stats-grid {\n  grid-template-columns: repeat(3, minmax(110px, 150px));\n  gap: 8px;\n  align-items: start;\n}\n\n.stat-card {\n  background: color-mix(in srgb, var(--wa-color-brand-fill-loud) 4%, white);\n  box-shadow: none;\n  border-radius: 18px;\n  padding: 0.62rem 0.85rem;\n}\n\n.stat-label {\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);\n  font-size: 0.68rem;\n  text-transform: uppercase;\n  font-weight: 800;\n  letter-spacing: 0.08em;\n}\n\n.stat-value {\n  font-size: 1rem;\n  font-weight: 800;\n  line-height: 1.1;\n}\n\n.preview-header {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 10px;\n  align-items: center;\n}\n\n.plot-shell,\n.table-shell {\n  border-radius: 18px;\n  background: color-mix(in srgb, var(--wa-color-surface-default) 96%, white);\n  border: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 80%, white);\n  padding: 7px 9px;\n}\n\n.table-shell table {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: 0.92rem;\n}\n\n.table-shell th,\n.table-shell td {\n  padding: 8px 10px;\n  border-bottom: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 70%, white);\n  text-align: left;\n}\n\n.table-shell th:last-child,\n.table-shell td:last-child {\n  text-align: right;\n}\n\n.table-shell th {\n  font-size: 0.76rem;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 58%, white);\n}\n\n.tab-shell {\n  min-height: 330px;\n}\n\n.sidebar-callout {\n  display: grid;\n  grid-template-columns: auto minmax(0, 1fr);\n  align-items: flex-start;\n  gap: 0.75rem;\n}\n\n.sidebar-callout wa-icon {\n  color: var(--wa-color-brand-fill-loud);\n  font-size: 1.15rem;\n  line-height: 1;\n  margin-top: 0.2rem;\n}\n\n.sidebar-callout-text {\n  margin: 0;\n  line-height: 1.5;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 78%, white);\n}\n\n.preset-label {\n  margin: 0;\n  font-size: 0.82rem;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  font-weight: 800;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);\n}\n\n.preset-radios {\n  width: 100%;\n}\n\n.preset-radios::part(form-control-input) {\n  gap: 1rem;\n}\n\n.preset-radios wa-radio {\n  margin-right: 1rem;\n}\n\n@media (max-width: 860px) {\n  .workbench-layout,\n  .stats-grid {\n    grid-template-columns: 1fr;\n  }\n\n  .sidebar-card {\n    position: static;\n  }\n}"
+css_text &lt;- "/* Store this file next to app.R as app.css. */\n\nbody {\n  margin: 0;\n  background: var(--wa-color-surface-default);\n  color: var(--wa-color-text-normal, #1f2937);\n  font-family: var(--wa-font-family-body, 'Segoe UI', sans-serif);\n}\n\n.workbench-shell {\n  padding: 14px;\n  background:\n    radial-gradient(circle at top left, color-mix(in srgb, var(--wa-color-brand-fill-loud) 16%, transparent), transparent 28%),\n    linear-gradient(180deg, color-mix(in srgb, var(--wa-color-surface-default) 90%, white), var(--wa-color-surface-default));\n}\n\n.workbench-stage {\n  width: min(1080px, 100%);\n  margin: 0 auto;\n  display: grid;\n  gap: 12px;\n}\n\n.workbench-kicker {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 72%, white);\n  font-size: 0.88rem;\n  font-weight: 700;\n}\n\n.workbench-layout {\n  display: grid;\n  grid-template-columns: 280px minmax(0, 1fr);\n  gap: 12px;\n  align-items: stretch;\n}\n\n.title-card,\n.sidebar-card,\n.preview-card,\n.stat-card {\n  --wa-panel-border-radius: 22px;\n  border: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 80%, white);\n  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);\n}\n\n.title-card,\n.preview-card {\n  background: color-mix(in srgb, var(--wa-color-surface-default) 92%, white);\n}\n\n.preview-card {\n  height: 100%;\n}\n\n.sidebar-card {\n  background: color-mix(in srgb, var(--wa-color-neutral-fill-normal) 12%, white);\n  position: sticky;\n  top: 0;\n  height: 100%;\n}\n\n.title-stack,\n.sidebar-stack,\n.preview-stack,\n.stats-grid,\n.tab-stack {\n  display: grid;\n  gap: 10px;\n}\n\n.title-line {\n  margin: 0;\n  font-size: 1.95rem;\n  line-height: 1;\n  letter-spacing: -0.03em;\n}\n\n.title-copy,\n.sidebar-note,\n.tab-copy,\n.details-copy {\n  margin: 0;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 72%, white);\n  line-height: 1.45;\n}\n\n.badge-row {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  align-items: center;\n}\n\n.preset-group {\n  display: grid;\n  gap: 0.55rem;\n}\n\n.stats-grid {\n  grid-template-columns: repeat(3, minmax(110px, 150px));\n  gap: 8px;\n  align-items: start;\n}\n\n.stat-card {\n  background: color-mix(in srgb, var(--wa-color-brand-fill-loud) 4%, white);\n  box-shadow: none;\n  border-radius: 18px;\n  padding: 0.62rem 0.85rem;\n}\n\n.stat-label {\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);\n  font-size: 0.68rem;\n  text-transform: uppercase;\n  font-weight: 800;\n  letter-spacing: 0.08em;\n}\n\n.stat-value {\n  font-size: 1rem;\n  font-weight: 800;\n  line-height: 1.1;\n}\n\n.preview-header {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 10px;\n  align-items: center;\n}\n\n.plot-shell,\n.table-shell {\n  border-radius: 18px;\n  background: color-mix(in srgb, var(--wa-color-surface-default) 96%, white);\n  border: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 80%, white);\n  padding: 7px 9px;\n}\n\n.table-shell table {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: 0.92rem;\n}\n\n.table-shell th,\n.table-shell td {\n  padding: 8px 10px;\n  border-bottom: 1px solid color-mix(in srgb, var(--wa-color-surface-border) 70%, white);\n  text-align: left;\n}\n\n.table-shell th:last-child,\n.table-shell td:last-child {\n  text-align: right;\n}\n\n.table-shell th {\n  font-size: 0.76rem;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 58%, white);\n}\n\n.tab-shell {\n  min-height: 330px;\n}\n\n.preset-label {\n  margin: 0;\n  font-size: 0.82rem;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  font-weight: 800;\n  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);\n}\n\n.preset-radios {\n  width: 100%;\n}\n\n.preset-radios::part(form-control-input) {\n  gap: 1rem;\n}\n\n.preset-radios wa-radio {\n  margin-right: 1rem;\n}\n\n@media (max-width: 860px) {\n  .workbench-layout,\n  .stats-grid {\n    grid-template-columns: 1fr;\n  }\n\n  .sidebar-card {\n    position: static;\n  }\n}"
 js_text &lt;- "// Store this file next to app.R as app.js.\n\n(function() {\n  function syncWorkbenchControls() {\n    const tabs = document.getElementById('surface_tabs');\n    const trend = document.getElementById('show_smoother');\n\n    if (!tabs || !trend) {\n      return;\n    }\n\n    trend.disabled = tabs.active !== 'chart';\n  }\n\n  function bindWorkbenchControls() {\n    const tabs = document.getElementById('surface_tabs');\n\n    if (!tabs || tabs.dataset.workbenchControlsBound) {\n      syncWorkbenchControls();\n      return;\n    }\n\n    tabs.dataset.workbenchControlsBound = 'true';\n    tabs.addEventListener('wa-tab-show', syncWorkbenchControls);\n    syncWorkbenchControls();\n  }\n\n  document.addEventListener('shiny:connected', function() {\n    setTimeout(bindWorkbenchControls, 0);\n  }, { once: true });\n\n  setTimeout(bindWorkbenchControls, 0);\n})();"
 
 show_shinylive_badge &lt;- isTRUE(get0("show_shinylive_badge", ifnotfound = FALSE))
@@ -320,33 +358,9 @@ ui &lt;- webawesomePage(
           header = "Controls",
           wa_container(
             class = "sidebar-stack",
-            wa_select(
-              "species",
-              label = "Species",
-              value = "all",
-              wa_option("All species", value = "all"),
-              wa_option("Setosa", value = "setosa"),
-              wa_option("Versicolor", value = "versicolor"),
-              wa_option("Virginica", value = "virginica")
-            ),
-            wa_select(
-              "x_var",
-              label = "X variable",
-              value = "Sepal.Length",
-              wa_option("Sepal length", value = "Sepal.Length"),
-              wa_option("Sepal width", value = "Sepal.Width"),
-              wa_option("Petal length", value = "Petal.Length"),
-              wa_option("Petal width", value = "Petal.Width")
-            ),
-            wa_select(
-              "y_var",
-              label = "Y variable",
-              value = "Sepal.Width",
-              wa_option("Sepal length", value = "Sepal.Length"),
-              wa_option("Sepal width", value = "Sepal.Width"),
-              wa_option("Petal length", value = "Petal.Length"),
-              wa_option("Petal width", value = "Petal.Width")
-            ),
+            wa_select_choices("species", "Species", "all", species_choices),
+            wa_select_choices("x_var", "X variable", "Sepal.Length", variable_choices),
+            wa_select_choices("y_var", "Y variable", "Sepal.Width", variable_choices),
             wa_switch("show_smoother", "Show trend line"),
             uiOutput("preset_controls"),
             wa_button(
@@ -372,33 +386,9 @@ ui &lt;- webawesomePage(
             ),
             wa_container(
               class = "stats-grid",
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Rows"),
-                  span(class = "stat-value", textOutput("row_count", inline = TRUE))
-                )
-              ),
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Correlation"),
-                  span(class = "stat-value", textOutput("correlation_value", inline = TRUE))
-                )
-              ),
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Focus"),
-                  span(class = "stat-value", textOutput("focus_value", inline = TRUE))
-                )
-              )
+              stat_card("Rows", "row_count"),
+              stat_card("Correlation", "correlation_value"),
+              stat_card("Focus", "focus_value")
             ),
             wa_tab_group(
               class = "workbench-tab-group",
@@ -496,6 +486,10 @@ server &lt;- function(input, output, session) {
   current_x_var &lt;- reactive(input$x_var %||% "Sepal.Length")
   current_y_var &lt;- reactive(input$y_var %||% "Sepal.Width")
   trend_enabled &lt;- reactiveVal(FALSE)
+  species_label &lt;- reactive({
+    species &lt;- input$species %||% "all"
+    if (species == "all") "All species" else tools::toTitleCase(species)
+  })
 
   current_preset &lt;- reactive({
     x_var &lt;- current_x_var()
@@ -548,14 +542,8 @@ server &lt;- function(input, output, session) {
   })
 
   output$selection_badges &lt;- renderUI({
-    species_label &lt;- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     tagList(
-      wa_badge(species_label, appearance = "filled"),
+      wa_badge(species_label(), appearance = "filled"),
       wa_badge(
         sprintf("%s vs %s", current_x_var(), current_y_var()),
         appearance = "filled"
@@ -672,14 +660,8 @@ server &lt;- function(input, output, session) {
   })
 
   output$filters_text &lt;- renderText({
-    species_label &lt;- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     paste(
-      "Species filter:", species_label, ".",
+      "Species filter:", species_label(), ".",
       "X variable:", current_x_var(), ".",
       "Y variable:", current_y_var(), ".",
       if (isTRUE(trend_enabled())) "Trend line: on." else "Trend line: off."
@@ -687,17 +669,11 @@ server &lt;- function(input, output, session) {
   })
 
   output$inspector_state &lt;- renderUI({
-    species_label &lt;- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     wa_container(
       class = "wa-stack",
       style = "gap: 0.5rem;",
       wa_badge(paste("Tab:", tools::toTitleCase(input$surface_tabs %||% "chart")), appearance = "filled"),
-      wa_badge(paste("Species:", species_label), appearance = "filled"),
+      wa_badge(paste("Species:", species_label()), appearance = "filled"),
       wa_badge(paste("X:", current_x_var()), appearance = "filled"),
       wa_badge(paste("Y:", current_y_var()), appearance = "filled")
     )
@@ -749,6 +725,44 @@ library(htmltools)
 
 `%||%` &lt;- function(x, y) {
   if (is.null(x)) y else x
+}
+
+species_choices &lt;- c(
+  "All species" = "all",
+  "Setosa" = "setosa",
+  "Versicolor" = "versicolor",
+  "Virginica" = "virginica"
+)
+
+variable_choices &lt;- c(
+  "Sepal length" = "Sepal.Length",
+  "Sepal width" = "Sepal.Width",
+  "Petal length" = "Petal.Length",
+  "Petal width" = "Petal.Width"
+)
+
+wa_select_choices &lt;- function(id, label, value, choices) {
+  do.call(
+    wa_select,
+    c(
+      list(id, label = label, value = value),
+      lapply(names(choices), function(name) {
+        wa_option(name, value = choices[[name]])
+      })
+    )
+  )
+}
+
+stat_card &lt;- function(label, output_id) {
+  wa_container(
+    class = "stat-card",
+    wa_container(
+      class = "wa-stack",
+      style = "gap: 0.12rem; padding: 0;",
+      span(class = "stat-label", label),
+      span(class = "stat-value", textOutput(output_id, inline = TRUE))
+    )
+  )
 }
 
 if (!exists("css_text", inherits = FALSE) || !exists("js_text", inherits = FALSE)) {
@@ -839,33 +853,9 @@ ui &lt;- webawesomePage(
           header = "Controls",
           wa_container(
             class = "sidebar-stack",
-            wa_select(
-              "species",
-              label = "Species",
-              value = "all",
-              wa_option("All species", value = "all"),
-              wa_option("Setosa", value = "setosa"),
-              wa_option("Versicolor", value = "versicolor"),
-              wa_option("Virginica", value = "virginica")
-            ),
-            wa_select(
-              "x_var",
-              label = "X variable",
-              value = "Sepal.Length",
-              wa_option("Sepal length", value = "Sepal.Length"),
-              wa_option("Sepal width", value = "Sepal.Width"),
-              wa_option("Petal length", value = "Petal.Length"),
-              wa_option("Petal width", value = "Petal.Width")
-            ),
-            wa_select(
-              "y_var",
-              label = "Y variable",
-              value = "Sepal.Width",
-              wa_option("Sepal length", value = "Sepal.Length"),
-              wa_option("Sepal width", value = "Sepal.Width"),
-              wa_option("Petal length", value = "Petal.Length"),
-              wa_option("Petal width", value = "Petal.Width")
-            ),
+            wa_select_choices("species", "Species", "all", species_choices),
+            wa_select_choices("x_var", "X variable", "Sepal.Length", variable_choices),
+            wa_select_choices("y_var", "Y variable", "Sepal.Width", variable_choices),
             wa_switch("show_smoother", "Show trend line"),
             uiOutput("preset_controls"),
             wa_button(
@@ -891,33 +881,9 @@ ui &lt;- webawesomePage(
             ),
             wa_container(
               class = "stats-grid",
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Rows"),
-                  span(class = "stat-value", textOutput("row_count", inline = TRUE))
-                )
-              ),
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Correlation"),
-                  span(class = "stat-value", textOutput("correlation_value", inline = TRUE))
-                )
-              ),
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Focus"),
-                  span(class = "stat-value", textOutput("focus_value", inline = TRUE))
-                )
-              )
+              stat_card("Rows", "row_count"),
+              stat_card("Correlation", "correlation_value"),
+              stat_card("Focus", "focus_value")
             ),
             wa_tab_group(
               class = "workbench-tab-group",
@@ -1015,6 +981,10 @@ server &lt;- function(input, output, session) {
   current_x_var &lt;- reactive(input$x_var %||% "Sepal.Length")
   current_y_var &lt;- reactive(input$y_var %||% "Sepal.Width")
   trend_enabled &lt;- reactiveVal(FALSE)
+  species_label &lt;- reactive({
+    species &lt;- input$species %||% "all"
+    if (species == "all") "All species" else tools::toTitleCase(species)
+  })
 
   current_preset &lt;- reactive({
     x_var &lt;- current_x_var()
@@ -1067,14 +1037,8 @@ server &lt;- function(input, output, session) {
   })
 
   output$selection_badges &lt;- renderUI({
-    species_label &lt;- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     tagList(
-      wa_badge(species_label, appearance = "filled"),
+      wa_badge(species_label(), appearance = "filled"),
       wa_badge(
         sprintf("%s vs %s", current_x_var(), current_y_var()),
         appearance = "filled"
@@ -1191,14 +1155,8 @@ server &lt;- function(input, output, session) {
   })
 
   output$filters_text &lt;- renderText({
-    species_label &lt;- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     paste(
-      "Species filter:", species_label, ".",
+      "Species filter:", species_label(), ".",
       "X variable:", current_x_var(), ".",
       "Y variable:", current_y_var(), ".",
       if (isTRUE(trend_enabled())) "Trend line: on." else "Trend line: off."
@@ -1206,17 +1164,11 @@ server &lt;- function(input, output, session) {
   })
 
   output$inspector_state &lt;- renderUI({
-    species_label &lt;- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     wa_container(
       class = "wa-stack",
       style = "gap: 0.5rem;",
       wa_badge(paste("Tab:", tools::toTitleCase(input$surface_tabs %||% "chart")), appearance = "filled"),
-      wa_badge(paste("Species:", species_label), appearance = "filled"),
+      wa_badge(paste("Species:", species_label()), appearance = "filled"),
       wa_badge(paste("X:", current_x_var()), appearance = "filled"),
       wa_badge(paste("Y:", current_y_var()), appearance = "filled")
     )
@@ -1403,26 +1355,6 @@ body {
 
 .tab-shell {
   min-height: 330px;
-}
-
-.sidebar-callout {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.sidebar-callout wa-icon {
-  color: var(--wa-color-brand-fill-loud);
-  font-size: 1.15rem;
-  line-height: 1;
-  margin-top: 0.2rem;
-}
-
-.sidebar-callout-text {
-  margin: 0;
-  line-height: 1.5;
-  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 78%, white);
 }
 
 .preset-label {
