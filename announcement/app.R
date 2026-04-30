@@ -38,8 +38,8 @@ stat_card <- function(label, output_id) {
   wa_container(
     class = "stat-card",
     wa_container(
-      class = "wa-stack",
-      style = "gap: 0.12rem; padding: 0;",
+      class = "wa-stack wa-gap-3xs",
+      style = "padding: 0;",
       span(class = "stat-label", label),
       span(class = "stat-value", textOutput(output_id, inline = TRUE))
     )
@@ -70,8 +70,7 @@ ui <- webawesomePage(
     placement = "end",
     light_dismiss = FALSE,
     wa_container(
-      class = "wa-stack",
-      style = "gap: 1rem;",
+      class = "wa-stack wa-gap-m",
       wa_callout(
         variant = "brand",
         appearance = "outlined",
@@ -80,21 +79,19 @@ ui <- webawesomePage(
       ),
       wa_card(
         header = "Current view",
-        wa_container(class = "wa-stack", style = "gap: 0.5rem;", uiOutput("inspector_state"))
+        wa_container(class = "wa-stack wa-gap-s", uiOutput("inspector_state"))
       ),
       wa_card(
         header = "What this demo shows",
         wa_container(
-          class = "wa-stack",
-          style = "gap: 0.5rem;",
+          class = "wa-stack wa-gap-s",
           p(class = "details-copy", "One control rail drives three presentations of the same filtered state: chart, summary, and explanatory details.")
         )
       ),
       wa_card(
         header = "shiny.webawesome facilities",
         wa_container(
-          class = "wa-stack",
-          style = "gap: 0.5rem;",
+          class = "wa-stack wa-gap-s",
           tags$ul(
             class = "details-copy",
             style = "margin: 0; padding-left: 1.1rem;",
@@ -114,7 +111,7 @@ ui <- webawesomePage(
       # This utility row is only shown in the live article embed.
       if (show_shinylive_badge) {
         wa_container(
-          class = "workbench-kicker",
+          class = "workbench-kicker wa-cluster wa-gap-xs wa-align-items-center",
           wa_badge("Live in the browser", appearance = "accent"),
           span("Powered by Shinylive: A compact iris workbench")
         )
@@ -160,7 +157,7 @@ ui <- webawesomePage(
             wa_container(
               class = "preview-header",
               wa_container(
-                class = "badge-row",
+                class = "wa-cluster wa-gap-xs wa-align-items-center",
                 uiOutput("selection_badges")
               ),
               wa_badge(textOutput("tab_badge", inline = TRUE), appearance = "filled")
@@ -435,8 +432,7 @@ server <- function(input, output, session) {
 
   output$inspector_state <- renderUI({
     wa_container(
-      class = "wa-stack",
-      style = "gap: 0.5rem;",
+      class = "wa-stack wa-gap-s",
       wa_badge(paste("Tab:", tools::toTitleCase(input$surface_tabs %||% "chart")), appearance = "filled"),
       wa_badge(paste("Species:", species_label()), appearance = "filled"),
       wa_badge(paste("X:", current_x_var()), appearance = "filled"),
