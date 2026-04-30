@@ -70,14 +70,19 @@ Here's a simple, complete example app, rendered via Shinylive.
 
 .example-code-tabs {
   display: flex;
+  flex: 1 1 auto;
 }
 
 .example-code-tab {
   appearance: none;
   border: 0;
   background: transparent;
-  padding: 0.9rem 1.1rem;
+  flex: 1 1 0;
+  min-width: 4.5rem;
+  padding: 1rem 1.25rem;
   font-weight: 700;
+  font-size: 0.98rem;
+  text-align: center;
   color: #526077;
   border-right: 1px solid #d7deea;
 }
@@ -90,11 +95,36 @@ Here's a simple, complete example app, rendered via Shinylive.
 .example-code-copy {
   appearance: none;
   border: 0;
+  min-width: 3.25rem;
   border-left: 1px solid #d7deea;
   background: transparent;
   color: #526077;
   padding: 0 1rem;
-  min-width: 3.25rem;
+  position: relative;
+}
+
+.example-code-copy.is-copied::after,
+.example-code-copy.is-error::after {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0.5rem;
+  padding: 0.28rem 0.5rem;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.example-code-copy.is-copied::after {
+  content: "Copied";
+}
+
+.example-code-copy.is-error::after {
+  content: "Copy failed";
 }
 
 .example-code-copy:hover,
@@ -129,6 +159,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const tabs = Array.from(viewer.querySelectorAll(".example-code-tab"));
     const panes = Array.from(viewer.querySelectorAll(".example-code-pane"));
     const copyButton = viewer.querySelector(".example-code-copy");
+    let feedbackTimeout = null;
+
+    function showCopyFeedback(state) {
+      if (!copyButton) return;
+
+      copyButton.classList.remove("is-copied", "is-error");
+      if (feedbackTimeout) {
+        window.clearTimeout(feedbackTimeout);
+      }
+
+      copyButton.classList.add(state);
+      feedbackTimeout = window.setTimeout(() => {
+        copyButton.classList.remove("is-copied", "is-error");
+      }, 1200);
+    }
 
     function activatePane(target) {
       tabs.forEach((tab) => {
@@ -148,7 +193,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const activePane = viewer.querySelector(".example-code-pane.is-active code");
         if (!activePane) return;
 
-        await navigator.clipboard.writeText(activePane.textContent);
+        try {
+          await navigator.clipboard.writeText(activePane.textContent);
+          showCopyFeedback("is-copied");
+        } catch (error) {
+          showCopyFeedback("is-error");
+        }
       });
     }
   });
@@ -196,9 +246,12 @@ The code for the above example is shown below.
 This example showcases many of the facilities available in the package:
 
 - a visually rich component library
-- use of the layout utilities directly available from Web Awesome
+- direct use of Web Awesome layout utilities such as `wa-stack`,
+  `wa-cluster`, `wa-gap-*`, and `wa-align-*` classes
+- styling through Web Awesome design tokens and classes such as
+  `--wa-color-*`, `--wa-font-*`, and `wa-body-*`
 - reactive Shiny input bindings
-- helpers for executing commands on HTML elements, setting properties, and
+- helpers for calling methods on HTML elements, setting properties, and
   injecting simple JavaScript snippets
 
 ```{r}

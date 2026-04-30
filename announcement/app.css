@@ -22,10 +22,6 @@ body {
 }
 
 .workbench-kicker {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
   color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 72%, white);
   font-size: 0.88rem;
   font-weight: 700;
@@ -84,15 +80,7 @@ body {
 .tab-copy,
 .details-copy {
   margin: 0;
-  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 72%, white);
   line-height: 1.45;
-}
-
-.badge-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
 }
 
 .preset-group {
@@ -172,33 +160,10 @@ body {
   min-height: 330px;
 }
 
-.sidebar-callout {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.sidebar-callout wa-icon {
-  color: var(--wa-color-brand-fill-loud);
-  font-size: 1.15rem;
-  line-height: 1;
-  margin-top: 0.2rem;
-}
-
-.sidebar-callout-text {
-  margin: 0;
-  line-height: 1.5;
-  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 78%, white);
-}
-
 .preset-label {
   margin: 0;
-  font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-weight: 800;
-  color: color-mix(in srgb, var(--wa-color-text-normal, #1f2937) 60%, white);
 }
 
 .preset-radios {

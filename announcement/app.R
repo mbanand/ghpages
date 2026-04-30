@@ -1,11 +1,50 @@
-# Store this file next to app.css and app.js.
+# Store this file as app.R next to app.css and app.js.
 
 library(shiny)
 library(shiny.webawesome)
 library(htmltools)
+library(ggplot2)
 
 `%||%` <- function(x, y) {
   if (is.null(x)) y else x
+}
+
+species_choices <- c(
+  "All species" = "all",
+  "Setosa" = "setosa",
+  "Versicolor" = "versicolor",
+  "Virginica" = "virginica"
+)
+
+variable_choices <- c(
+  "Sepal length" = "Sepal.Length",
+  "Sepal width" = "Sepal.Width",
+  "Petal length" = "Petal.Length",
+  "Petal width" = "Petal.Width"
+)
+
+select_choices <- function(id, label, value, choices) {
+  do.call(
+    wa_select,
+    c(
+      list(id, label = label, value = value),
+      lapply(names(choices), function(name) {
+        wa_option(name, value = choices[[name]])
+      })
+    )
+  )
+}
+
+stat_card <- function(label, output_id) {
+  wa_container(
+    class = "stat-card",
+    wa_container(
+      class = "wa-stack wa-gap-3xs",
+      style = "padding: 0;",
+      span(class = "stat-label", label),
+      span(class = "stat-value", textOutput(output_id, inline = TRUE))
+    )
+  )
 }
 
 if (!exists("css_text", inherits = FALSE) || !exists("js_text", inherits = FALSE)) {
@@ -20,18 +59,19 @@ if (!exists("css_text", inherits = FALSE) || !exists("js_text", inherits = FALSE
 
 show_shinylive_badge <- isTRUE(get0("show_shinylive_badge", ifnotfound = FALSE))
 
+# Build the demo UI.
 ui <- webawesomePage(
   title = "Iris Workbench",
   tags$style(HTML(css_text)),
   wa_js(js_text),
+  # The drawer acts like a lightweight inspector for the current app state.
   wa_drawer(
     "help_drawer",
     label = "Inspector",
     placement = "end",
     light_dismiss = FALSE,
     wa_container(
-      class = "wa-stack",
-      style = "gap: 1rem;",
+      class = "wa-stack wa-gap-m",
       wa_callout(
         variant = "brand",
         appearance = "outlined",
@@ -40,21 +80,19 @@ ui <- webawesomePage(
       ),
       wa_card(
         header = "Current view",
-        wa_container(class = "wa-stack", style = "gap: 0.5rem;", uiOutput("inspector_state"))
+        wa_container(class = "wa-stack wa-gap-s", uiOutput("inspector_state"))
       ),
       wa_card(
         header = "What this demo shows",
         wa_container(
-          class = "wa-stack",
-          style = "gap: 0.5rem;",
+          class = "wa-stack wa-gap-s",
           p(class = "details-copy", "One control rail drives three presentations of the same filtered state: chart, summary, and explanatory details.")
         )
       ),
       wa_card(
         header = "shiny.webawesome facilities",
         wa_container(
-          class = "wa-stack",
-          style = "gap: 0.5rem;",
+          class = "wa-stack wa-gap-s",
           tags$ul(
             class = "details-copy",
             style = "margin: 0; padding-left: 1.1rem;",
@@ -71,9 +109,10 @@ ui <- webawesomePage(
     class = "workbench-shell",
     wa_container(
       class = "workbench-stage",
+      # This utility row is only shown in the live article embed.
       if (show_shinylive_badge) {
         wa_container(
-          class = "workbench-kicker",
+          class = "workbench-kicker wa-cluster wa-gap-xs wa-align-items-center",
           wa_badge("Live in the browser", appearance = "accent"),
           span("Powered by Shinylive: A compact iris workbench")
         )
@@ -91,38 +130,15 @@ ui <- webawesomePage(
       ),
       wa_container(
         class = "workbench-layout",
+        # Left rail for filters and small app actions.
         wa_card(
           class = "sidebar-card",
           header = "Controls",
           wa_container(
             class = "sidebar-stack",
-            wa_select(
-              "species",
-              label = "Species",
-              value = "all",
-              wa_option("All species", value = "all"),
-              wa_option("Setosa", value = "setosa"),
-              wa_option("Versicolor", value = "versicolor"),
-              wa_option("Virginica", value = "virginica")
-            ),
-            wa_select(
-              "x_var",
-              label = "X variable",
-              value = "Sepal.Length",
-              wa_option("Sepal length", value = "Sepal.Length"),
-              wa_option("Sepal width", value = "Sepal.Width"),
-              wa_option("Petal length", value = "Petal.Length"),
-              wa_option("Petal width", value = "Petal.Width")
-            ),
-            wa_select(
-              "y_var",
-              label = "Y variable",
-              value = "Sepal.Width",
-              wa_option("Sepal length", value = "Sepal.Length"),
-              wa_option("Sepal width", value = "Sepal.Width"),
-              wa_option("Petal length", value = "Petal.Length"),
-              wa_option("Petal width", value = "Petal.Width")
-            ),
+            select_choices("species", "Species", "all", species_choices),
+            select_choices("x_var", "X variable", "Sepal.Length", variable_choices),
+            select_choices("y_var", "Y variable", "Sepal.Width", variable_choices),
             wa_switch("show_smoother", "Show trend line"),
             uiOutput("preset_controls"),
             wa_button(
@@ -131,9 +147,10 @@ ui <- webawesomePage(
               appearance = "accent",
               `data-drawer` = "open help_drawer"
             ),
-            p(class = "sidebar-note", textOutput("sidebar_note"))
+            p(class = "sidebar-note wa-body-s wa-color-text-quiet", textOutput("sidebar_note"))
           )
         ),
+        # Main stage for summary badges, tabs, and the live outputs.
         wa_card(
           class = "preview-card",
           wa_container(
@@ -141,40 +158,16 @@ ui <- webawesomePage(
             wa_container(
               class = "preview-header",
               wa_container(
-                class = "badge-row",
+                class = "wa-cluster wa-gap-xs wa-align-items-center",
                 uiOutput("selection_badges")
               ),
               wa_badge(textOutput("tab_badge", inline = TRUE), appearance = "filled")
             ),
             wa_container(
               class = "stats-grid",
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Rows"),
-                  span(class = "stat-value", textOutput("row_count", inline = TRUE))
-                )
-              ),
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Correlation"),
-                  span(class = "stat-value", textOutput("correlation_value", inline = TRUE))
-                )
-              ),
-              wa_container(
-                class = "stat-card",
-                wa_container(
-                  class = "wa-stack",
-                  style = "gap: 0.12rem; padding: 0;",
-                  span(class = "stat-label", "Focus"),
-                  span(class = "stat-value", textOutput("focus_value", inline = TRUE))
-                )
-              )
+              stat_card("Rows", "row_count"),
+              stat_card("Correlation", "correlation_value"),
+              stat_card("Focus", "focus_value")
             ),
             wa_tab_group(
               class = "workbench-tab-group",
@@ -188,7 +181,7 @@ ui <- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "Change a variable or species on the left and the plot responds immediately."
                   ),
                   wa_container(
@@ -202,7 +195,7 @@ ui <- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "The summary tab turns the same filtered data into a compact numeric view."
                   ),
                   wa_select(
@@ -224,19 +217,19 @@ ui <- webawesomePage(
                 wa_container(
                   class = "tab-stack tab-shell",
                   p(
-                    class = "tab-copy",
+                    class = "tab-copy wa-body-s wa-color-text-quiet",
                     "The details tab uses expandable sections that explain the views."
                   ),
                   wa_details(
                     "story_details",
                     summary = "What this view is showing",
                     open = TRUE,
-                    p(class = "details-copy", textOutput("details_text"))
+                    p(class = "details-copy wa-body-s wa-color-text-quiet", textOutput("details_text"))
                   ),
                   wa_details(
                     "change_details",
                     summary = "Settings",
-                    p(class = "details-copy", textOutput("filters_text"))
+                    p(class = "details-copy wa-body-s wa-color-text-quiet", textOutput("filters_text"))
                   )
                 )
               )
@@ -248,30 +241,15 @@ ui <- webawesomePage(
   )
 )
 
+# Server logic keeps the plot, summaries, details, and inspector in sync.
 server <- function(input, output, session) {
-  coerce_switch_state <- function(value) {
-    if (is.null(value)) {
-      return(TRUE)
-    }
-
-    if (is.logical(value)) {
-      return(isTRUE(value))
-    }
-
-    if (is.numeric(value)) {
-      return(!is.na(value) && value != 0)
-    }
-
-    if (is.character(value)) {
-      return(!tolower(value) %in% c("", "0", "false", "off", "no"))
-    }
-
-    FALSE
-  }
-
   current_x_var <- reactive(input$x_var %||% "Sepal.Length")
   current_y_var <- reactive(input$y_var %||% "Sepal.Width")
   trend_enabled <- reactiveVal(FALSE)
+  species_label <- reactive({
+    species <- input$species %||% "all"
+    if (species == "all") "All species" else tools::toTitleCase(species)
+  })
 
   current_preset <- reactive({
     x_var <- current_x_var()
@@ -297,7 +275,7 @@ server <- function(input, output, session) {
   output$preset_controls <- renderUI({
     wa_container(
       class = "preset-group",
-      p(class = "preset-label", "Presets"),
+      p(class = "preset-label wa-form-control-label wa-font-size-s", "Presets"),
       wa_radio_group(
         "preset_mode",
         class = "preset-radios",
@@ -320,18 +298,13 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$show_smoother, ignoreInit = TRUE, {
-    trend_enabled(coerce_switch_state(input$show_smoother))
+    trend_enabled(input$show_smoother)
   })
 
+  # The badges mirror the current filter and variable choices.
   output$selection_badges <- renderUI({
-    species_label <- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     tagList(
-      wa_badge(species_label, appearance = "filled"),
+      wa_badge(species_label(), appearance = "filled"),
       wa_badge(
         sprintf("%s vs %s", current_x_var(), current_y_var()),
         appearance = "filled"
@@ -374,51 +347,47 @@ server <- function(input, output, session) {
     }
   })
 
+  base_plot <- reactive({
+    data <- filtered_data()
+    x_var <- current_x_var()
+    y_var <- current_y_var()
+    palette <- c(setosa = "#2563eb", versicolor = "#ea580c", virginica = "#059669")
+
+    ggplot(
+      data,
+      aes(x = .data[[x_var]], y = .data[[y_var]], color = Species)
+    ) +
+      geom_point(size = 2.2, alpha = 0.82) +
+      scale_color_manual(values = palette) +
+      labs(x = x_var, y = y_var, color = NULL) +
+      theme_minimal(base_size = 12) +
+      theme(
+        legend.position = "top",
+        legend.justification = "left",
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_line(color = "#e2e8f0"),
+        axis.title = element_text(color = "#0f172a"),
+        axis.text = element_text(color = "#334155")
+      )
+  })
+
   output$iris_plot <- renderPlot({
     data <- filtered_data()
     x_var <- current_x_var()
     y_var <- current_y_var()
-    species <- as.character(data$Species)
-    species_levels <- unique(species)
-    palette <- c(setosa = "#2563eb", versicolor = "#ea580c", virginica = "#059669")
-    point_colors <- unname(palette[tolower(species)])
-    point_colors[is.na(point_colors)] <- "#475569"
-
-    graphics::par(
-      mar = c(4.2, 4.2, 1.2, 0.8),
-      bg = "white",
-      col.axis = "#334155",
-      col.lab = "#0f172a"
-    )
-
-    graphics::plot(
-      data[[x_var]],
-      data[[y_var]],
-      col = grDevices::adjustcolor(point_colors, alpha.f = 0.82),
-      pch = 19,
-      cex = 1.15,
-      xlab = x_var,
-      ylab = y_var
-    )
+    p <- base_plot()
 
     if (isTRUE(trend_enabled()) && nrow(data) > 1) {
-      fit <- stats::lm(data[[y_var]] ~ data[[x_var]])
-      graphics::abline(fit, col = "#1d4ed8", lwd = 2)
+      fit <- lm(data[[y_var]] ~ data[[x_var]])
+      p <- p + geom_abline(
+        intercept = coef(fit)[1],
+        slope = coef(fit)[2],
+        color = "#1d4ed8",
+        linewidth = 0.9
+      )
     }
 
-    legend_colors <- unname(palette[tolower(species_levels)])
-    legend_colors[is.na(legend_colors)] <- "#475569"
-
-    graphics::legend(
-      "top",
-      inset = 0.02,
-      horiz = TRUE,
-      bty = "n",
-      legend = tools::toTitleCase(species_levels),
-      col = legend_colors,
-      pch = 19,
-      pt.cex = 1
-    )
+    p
   })
 
   output$summary_table <- renderTable({
@@ -439,6 +408,7 @@ server <- function(input, output, session) {
     summary_df
   }, striped = TRUE, bordered = FALSE, width = "100%", rownames = FALSE)
 
+  # The details tab turns the current state into plain-language explanation.
   output$details_text <- renderText({
     x_var <- current_x_var()
     y_var <- current_y_var()
@@ -448,14 +418,8 @@ server <- function(input, output, session) {
   })
 
   output$filters_text <- renderText({
-    species_label <- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     paste(
-      "Species filter:", species_label, ".",
+      "Species filter:", species_label(), ".",
       "X variable:", current_x_var(), ".",
       "Y variable:", current_y_var(), ".",
       if (isTRUE(trend_enabled())) "Trend line: on." else "Trend line: off."
@@ -463,17 +427,10 @@ server <- function(input, output, session) {
   })
 
   output$inspector_state <- renderUI({
-    species_label <- if ((input$species %||% "all") == "all") {
-      "All species"
-    } else {
-      tools::toTitleCase(input$species)
-    }
-
     wa_container(
-      class = "wa-stack",
-      style = "gap: 0.5rem;",
+      class = "wa-stack wa-gap-s",
       wa_badge(paste("Tab:", tools::toTitleCase(input$surface_tabs %||% "chart")), appearance = "filled"),
-      wa_badge(paste("Species:", species_label), appearance = "filled"),
+      wa_badge(paste("Species:", species_label()), appearance = "filled"),
       wa_badge(paste("X:", current_x_var()), appearance = "filled"),
       wa_badge(paste("Y:", current_y_var()), appearance = "filled")
     )
