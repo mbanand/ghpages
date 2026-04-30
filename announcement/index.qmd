@@ -70,14 +70,19 @@ Here's a simple, complete example app, rendered via Shinylive.
 
 .example-code-tabs {
   display: flex;
+  flex: 1 1 auto;
 }
 
 .example-code-tab {
   appearance: none;
   border: 0;
   background: transparent;
-  padding: 0.9rem 1.1rem;
+  flex: 1 1 0;
+  min-width: 4.5rem;
+  padding: 1rem 1.25rem;
   font-weight: 700;
+  font-size: 0.98rem;
+  text-align: center;
   color: #526077;
   border-right: 1px solid #d7deea;
 }

@@ -239,26 +239,6 @@ ui <- webawesomePage(
 )
 
 server <- function(input, output, session) {
-  coerce_switch_state <- function(value) {
-    if (is.null(value)) {
-      return(TRUE)
-    }
-
-    if (is.logical(value)) {
-      return(isTRUE(value))
-    }
-
-    if (is.numeric(value)) {
-      return(!is.na(value) && value != 0)
-    }
-
-    if (is.character(value)) {
-      return(!tolower(value) %in% c("", "0", "false", "off", "no"))
-    }
-
-    FALSE
-  }
-
   current_x_var <- reactive(input$x_var %||% "Sepal.Length")
   current_y_var <- reactive(input$y_var %||% "Sepal.Width")
   trend_enabled <- reactiveVal(FALSE)
@@ -314,7 +294,7 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$show_smoother, ignoreInit = TRUE, {
-    trend_enabled(coerce_switch_state(input$show_smoother))
+    trend_enabled(input$show_smoother)
   })
 
   output$selection_badges <- renderUI({

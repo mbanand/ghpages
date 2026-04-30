@@ -138,14 +138,19 @@ ul.task-list li input[type="checkbox"] {
 
 .example-code-tabs {
   display: flex;
+  flex: 1 1 auto;
 }
 
 .example-code-tab {
   appearance: none;
   border: 0;
   background: transparent;
-  padding: 0.9rem 1.1rem;
+  flex: 1 1 0;
+  min-width: 4.5rem;
+  padding: 1rem 1.25rem;
   font-weight: 700;
+  font-size: 0.98rem;
+  text-align: center;
   color: #526077;
   border-right: 1px solid #d7deea;
 }
@@ -463,26 +468,6 @@ ui &lt;- webawesomePage(
 )
 
 server &lt;- function(input, output, session) {
-  coerce_switch_state &lt;- function(value) {
-    if (is.null(value)) {
-      return(TRUE)
-    }
-
-    if (is.logical(value)) {
-      return(isTRUE(value))
-    }
-
-    if (is.numeric(value)) {
-      return(!is.na(value) &amp;&amp; value != 0)
-    }
-
-    if (is.character(value)) {
-      return(!tolower(value) %in% c("", "0", "false", "off", "no"))
-    }
-
-    FALSE
-  }
-
   current_x_var &lt;- reactive(input$x_var %||% "Sepal.Length")
   current_y_var &lt;- reactive(input$y_var %||% "Sepal.Width")
   trend_enabled &lt;- reactiveVal(FALSE)
@@ -538,7 +523,7 @@ server &lt;- function(input, output, session) {
   })
 
   observeEvent(input$show_smoother, ignoreInit = TRUE, {
-    trend_enabled(coerce_switch_state(input$show_smoother))
+    trend_enabled(input$show_smoother)
   })
 
   output$selection_badges &lt;- renderUI({
@@ -958,26 +943,6 @@ ui &lt;- webawesomePage(
 )
 
 server &lt;- function(input, output, session) {
-  coerce_switch_state &lt;- function(value) {
-    if (is.null(value)) {
-      return(TRUE)
-    }
-
-    if (is.logical(value)) {
-      return(isTRUE(value))
-    }
-
-    if (is.numeric(value)) {
-      return(!is.na(value) &amp;&amp; value != 0)
-    }
-
-    if (is.character(value)) {
-      return(!tolower(value) %in% c("", "0", "false", "off", "no"))
-    }
-
-    FALSE
-  }
-
   current_x_var &lt;- reactive(input$x_var %||% "Sepal.Length")
   current_y_var &lt;- reactive(input$y_var %||% "Sepal.Width")
   trend_enabled &lt;- reactiveVal(FALSE)
@@ -1033,7 +998,7 @@ server &lt;- function(input, output, session) {
   })
 
   observeEvent(input$show_smoother, ignoreInit = TRUE, {
-    trend_enabled(coerce_switch_state(input$show_smoother))
+    trend_enabled(input$show_smoother)
   })
 
   output$selection_badges &lt;- renderUI({
